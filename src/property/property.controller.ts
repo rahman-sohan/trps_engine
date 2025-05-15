@@ -7,23 +7,23 @@ import { FeedUrls } from 'src/lib/config/default.config';
 export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
 
-//   @Cron(CronExpression.EVERY_12_HOURS)
+  @Cron(CronExpression.EVERY_2_HOURS)
   @Get('fetch-data')
   async fetchData(): Promise<any> {
-    console.log('Fetching property data - Scheduled task running...');
+    console.log(`========================Cron job started========================`);
+    console.log(`Fetching property data - Scheduled task running...`);
     try {
 
-        const data = await Promise.all([
+        await Promise.all([
             this.propertyService.fetchAndSaveAccommodationsData(FeedUrls.ACCOMMODATIONS),
-            // this.propertyService.fetchAndSaveDescriptionsData(FeedUrls.DESCRIPTIONS),
-            // this.propertyService.fetchAndSaveAvailabilitiesData(FeedUrls.AVAILABILITIES),
-            // this.propertyService.fetchAndSaveRatesData(FeedUrls.RATES)
+            this.propertyService.fetchAndSaveDescriptionsData(FeedUrls.DESCRIPTIONS),
+            this.propertyService.fetchAndSaveAvailabilitiesData(FeedUrls.AVAILABILITIES),
+            this.propertyService.fetchAndSaveRatesData(FeedUrls.RATES)
         ])
 
         return {
             status: 'success',
             message: 'Property data fetched and saved successfully',
-            data: data
         }
     } catch (error) {
         console.error('Error fetching property data:', error);

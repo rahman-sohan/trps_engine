@@ -9,31 +9,85 @@ import { Rate } from './entities/rates.entity';
 @Injectable()
 export class DatabaseService {
 	constructor(
-		@InjectModel(Accommodation.name) private accommodationModel: Model<Accommodation>,
-		@InjectModel(Description.name) private descriptionModel: Model<Description>,
-		@InjectModel(Availability.name) private availabilityModel: Model<Availability>,
-		@InjectModel(Rate.name) private rateModel: Model<Rate>
+		@InjectModel(Accommodation.name, 'property_engine') private accommodationModel: Model<Accommodation>,
+		@InjectModel(Description.name, 'property_engine') private descriptionModel: Model<Description>,
+		@InjectModel(Availability.name, 'property_engine') private availabilityModel: Model<Availability>,
+		@InjectModel(Rate.name, 'property_engine') private rateModel: Model<Rate>
 	) {}
-
 	
-	async createAccommodation(accommodation: any) {
-		const accommodationData = await this.accommodationModel.insertMany(accommodation);
+	async createAccommodation(accommodation: Accommodation[]) {
+		const session = await this.accommodationModel.startSession();
+		try {
+			session.startTransaction();
 
-		return accommodationData;
+			await this.accommodationModel.deleteMany({});
+			await this.accommodationModel.create(accommodation, { ordered: true, session });
+			
+			await session.commitTransaction();
+			await session.endSession();
+
+			return accommodation;
+		} catch (error) {
+			await session.abortTransaction();
+			await session.endSession();
+			throw new Error(error);
+		}
 	}
 
-	async createDescription(description: Description) {
-		await this.descriptionModel.deleteMany({});
-		return this.descriptionModel.create(description);
+	async createDescription(description: Description[]) {
+		const session = await this.descriptionModel.startSession();
+		try {
+			session.startTransaction();
+
+			await this.descriptionModel.deleteMany({});
+			await this.descriptionModel.create(description, { ordered: true, session });
+			
+			await session.commitTransaction();
+			await session.endSession();
+
+			return description;
+		} catch (error) {
+			await session.abortTransaction();
+			await session.endSession();
+			throw new Error(error);
+		}
 	}
 
-	async createAvailability(availability: Availability) {
-		await this.availabilityModel.deleteMany({});
-		return this.availabilityModel.create(availability);
+	async createAvailability(availability: Availability[]) {
+		const session = await this.availabilityModel.startSession();
+		try {
+			session.startTransaction();
+
+			await this.availabilityModel.deleteMany({});
+			await this.availabilityModel.create(availability, { ordered: true, session });
+			
+			await session.commitTransaction();
+			await session.endSession();
+
+			return availability;
+		} catch (error) {
+			await session.abortTransaction();
+			await session.endSession();
+			throw new Error(error);
+		}
 	}
 
-	async createRate(rate: Rate) {
-		await this.rateModel.deleteMany({});
-		return this.rateModel.create(rate);
-	}	
+	async createRate(rate: Rate[]) {
+		const session = await this.rateModel.startSession();
+		try {
+			session.startTransaction();
+
+			await this.rateModel.deleteMany({});
+			await this.rateModel.create(rate, { ordered: true, session });
+			
+			await session.commitTransaction();
+			await session.endSession();
+
+			return rate;
+		} catch (error) {
+			await session.abortTransaction();
+			await session.endSession();
+			throw new Error(error);
+		}
+	}
 }

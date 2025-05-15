@@ -1,9 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import * as unzipper from 'unzipper';
-import { Readable } from 'stream';
-
 import { CustomHttpService } from 'src/custom-http-service/custom-http.service';
 import { HTTP_METHOD } from 'src/custom-http-service/httpcode.constant';
 import { XmlService } from '../lib/xml2json-parse';
@@ -24,21 +20,26 @@ export class PropertyService {
     return await this.databaseService.createAccommodation(accommodation);
   }
 
-  async fetchAndSaveDescriptionsData(url: string): Promise<void> {
-    const jsonData = await this.fetchZipAndConvertToJson(url);
-    return jsonData;
+  async fetchAndSaveDescriptionsData(url: string): Promise<any> {
+    const jsonData:any = await this.fetchZipAndConvertToJson(url);
+    const description = jsonData.AccommodationList.Accommodation;
+
+    return await this.databaseService.createDescription(description);
   }
 
-  async fetchAndSaveAvailabilitiesData(url: string): Promise<void> {
-    const jsonData = await this.fetchZipAndConvertToJson(url);
-    // console.log(jsonData);
-    return jsonData;
+  async fetchAndSaveAvailabilitiesData(url: string): Promise<any> {
+    const jsonData:any = await this.fetchZipAndConvertToJson(url);
+    const availability = jsonData.AvailabilitiesList.AccommodationList.Accommodation;
+
+
+    return await this.databaseService.createAvailability(availability);
   }
 
-  async fetchAndSaveRatesData(url: string): Promise<void> {
-    const jsonData = await this.fetchZipAndConvertToJson(url);
-    // console.log(jsonData);
-    return jsonData;
+  async fetchAndSaveRatesData(url: string): Promise<any> {
+    const jsonData:any = await this.fetchZipAndConvertToJson(url);
+    const rate = jsonData.RatesList.AccommodationList.Accommodation;
+
+    return await this.databaseService.createRate(rate);
   }
 
   private async fetchZipAndConvertToJson(url: string): Promise<void> {
