@@ -1,24 +1,33 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { FeedUrls } from 'src/lib/config/default.config';
 
-@Controller('property')
+@Controller('api/v1/property')
 export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
 
-  @Cron(CronExpression.EVERY_12_HOURS)
-  async fetchData(): Promise<void> {
+//   @Cron(CronExpression.EVERY_12_HOURS)
+  @Get('fetch-data')
+  async fetchData(): Promise<any> {
     console.log('Fetching property data - Scheduled task running...');
-    const urls = [
-      'https://feeds.avantio.com/accommodations/6d1885d0b17f961c8047092f6b4121a2',
-      'https://feeds.avantio.com/descriptions/6d1885d0b17f961c8047092f6b4121a2',
-      'https://feeds.avantio.com/availabilities/6d1885d0b17f961c8047092f6b4121a2',
-    ];
-    for (const url of urls) {
-      const result = await this.propertyService.fetchAndSaveData(url);
-      console.log(result);
-    
-      return result;
+    try {
+
+        const data = await Promise.all([
+            this.propertyService.fetchAndSaveAccommodationsData(FeedUrls.ACCOMMODATIONS),
+            // this.propertyService.fetchAndSaveDescriptionsData(FeedUrls.DESCRIPTIONS),
+            // this.propertyService.fetchAndSaveAvailabilitiesData(FeedUrls.AVAILABILITIES),
+            // this.propertyService.fetchAndSaveRatesData(FeedUrls.RATES)
+        ])
+
+        return {
+            status: 'success',
+            message: 'Property data fetched and saved successfully',
+            data: data
+        }
+    } catch (error) {
+        console.error('Error fetching property data:', error);
+        throw new Error('Error fetching property data');
     }
   }
 } 

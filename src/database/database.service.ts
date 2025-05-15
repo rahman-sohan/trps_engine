@@ -1,32 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './entities/users.entity';
 import { Model } from 'mongoose';
+import { Accommodation } from './entities/accommodation.entity';
+import { Description } from './entities/description.entity';
+import { Availability } from './entities/availabilities.entity';
+import { Rate } from './entities/rates.entity';
 
 @Injectable()
 export class DatabaseService {
-	constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+	constructor(
+		@InjectModel(Accommodation.name) private accommodationModel: Model<Accommodation>,
+		@InjectModel(Description.name) private descriptionModel: Model<Description>,
+		@InjectModel(Availability.name) private availabilityModel: Model<Availability>,
+		@InjectModel(Rate.name) private rateModel: Model<Rate>
+	) {}
 
-	async findAllUsers(): Promise<User[]> {
-		return this.userModel.find().exec();
+	
+	async createAccommodation(accommodation: any) {
+		const accommodationData = await this.accommodationModel.insertMany(accommodation);
+
+		return accommodationData;
 	}
 
-	async seedUsers() {
-		try {
-			const randomDeviceToken = () => {
-				return Math.random().toString(36).substring(2, 15);
-			};
-
-			for (let i = 0; i < 10; i++) {
-				const user = {
-					name: `User ${randomDeviceToken()}`,
-					deviceToken: randomDeviceToken(),
-				};
-
-				await this.userModel.updateOne({ deviceToken: user.deviceToken }, { $set: user }, { upsert: true });
-			}
-		} catch (error) {
-			console.error('users already exists!');
-		}
+	async createDescription(description: Description) {
+		await this.descriptionModel.deleteMany({});
+		return this.descriptionModel.create(description);
 	}
+
+	async createAvailability(availability: Availability) {
+		await this.availabilityModel.deleteMany({});
+		return this.availabilityModel.create(availability);
+	}
+
+	async createRate(rate: Rate) {
+		await this.rateModel.deleteMany({});
+		return this.rateModel.create(rate);
+	}	
 }
