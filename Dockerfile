@@ -1,37 +1,34 @@
-# Build stage
+# Stage 1: Build
 FROM node:20-alpine AS builder
 
+# Set working directory
 WORKDIR /app
 
-# Copy package files
+# Copy package files and install dependencies
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy source code
+# Copy the rest of the application code
 COPY . .
 
 # Build the application
 RUN npm run build
 
-# Production stage
+# Stage 2: Production
 FROM node:20-alpine
 
+# Set working directory
 WORKDIR /app
 
-# Copy package files
+# Copy only production dependencies
 COPY package*.json ./
-
-# Install production dependencies only
 RUN npm install --only=production
 
-# Copy built application from builder stage
+# Copy the built application from the builder stage
 COPY --from=builder /app/dist ./dist
-COPY .env .env
 
 # Expose the port the app runs on
 EXPOSE 3000
 
 # Command to run the application
-CMD ["node", "dist/main"] 
+CMD ["node", "dist/main"]

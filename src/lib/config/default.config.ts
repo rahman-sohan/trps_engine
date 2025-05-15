@@ -2,7 +2,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 export const APP_CONFIG = {
-	MONGO_URI: process.env.MONGO_URI ?? 'mongodb://localhost:27017',
+	MONGO_URI: process.env.MONGO_URI ?? 'mongodb+srv://sohanur:jarJCRNjX5pSFYYb@cluster0.wkkexqu.mongodb.net/property_engine?retryWrites=true&w=majority&appName=Cluster0',
 };
 
 export enum FeedUrls{
