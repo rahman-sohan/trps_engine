@@ -133,4 +133,9 @@ export class DatabaseService {
 	async findByQuery(query: Record<string, any>): Promise<PropertyListing[]> {
 		return this.propertyListingModel.find(query).lean().exec();
 	}
+
+
+	async getAvailableProperties(query: Record<string, any>): Promise<PropertyListing[]> {
+		return this.propertyListingModel.find(query).limit(10).lean().exec();
+	}
 }

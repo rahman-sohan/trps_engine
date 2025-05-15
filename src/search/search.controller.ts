@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
@@ -6,23 +6,12 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 export class SearchController {
     constructor(private readonly searchService: SearchService) {}
 
-    @Get('available-properties')
-    async searchProperty(): Promise<any> {
-
-        const availableProperties = await this.searchService.getAvailableProperties();
+    @Post('available-properties')
+    async searchProperty(@Body() payload: any): Promise<any> {
+        
+        const availableProperties = await this.searchService.getAvailableProperties(payload);
 
         return availableProperties;
-    }
-
-    @Cron(CronExpression.EVERY_2_HOURS)
-    @Post('update-search-data')
-    async updateSearchData(): Promise<any> {
-        console.log(`========================Cron job started========================`);
-        console.log(`Seeding search data - Scheduled task running...`);
-
-        await this.searchService.getAvailableProperties();
-
-        return [];
     }
 
     @Cron(CronExpression.EVERY_2_HOURS)

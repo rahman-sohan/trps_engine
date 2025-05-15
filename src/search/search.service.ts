@@ -8,11 +8,19 @@ export class SearchService {
         private readonly databaseService: DatabaseService, 
         private readonly propertyListingService: PropertyListingService) {}
 
-    async getAvailableProperties(): Promise<any> {
-        
-        // const availableProperties = await this.databaseService.getAvailableProperties();
+    async getAvailableProperties(payload: any): Promise<any> {
+        // const { location, capacity, bedrooms, priceRange, amenities } = payload;
 
-        return [];
+        // const query = this.propertyListingService.buildPropertySearchQuery({
+        //     location,
+        //     capacity,
+        //     bedrooms,
+        //     priceRange,
+        //     amenities
+        // });
+
+        const availableProperties = await this.databaseService.getAvailableProperties({});
+        return availableProperties;
     }
 
     async updateListingData(): Promise<any> {
@@ -41,4 +49,6 @@ export class SearchService {
 
         return result;
     }
+
+
 }
