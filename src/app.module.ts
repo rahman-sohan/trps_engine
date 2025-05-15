@@ -3,12 +3,14 @@ import { AppController } from './app.controller';
 import { PropertyModule } from './property/property.module';
 import { DatabaseModule } from './database/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
     PropertyModule, 
     DatabaseModule,
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
+    SearchModule
   ],
   controllers: [AppController],
   providers: [],

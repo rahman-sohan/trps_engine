@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { FeedUrls } from 'src/lib/config/default.config';
@@ -8,7 +8,7 @@ export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
 
   @Cron(CronExpression.EVERY_2_HOURS)
-  @Get('fetch-data')
+  @Post('fetch-data')
   async fetchData(): Promise<any> {
     console.log(`========================Cron job started========================`);
     console.log(`Fetching property data - Scheduled task running...`);
