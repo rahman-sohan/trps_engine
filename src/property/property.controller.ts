@@ -8,8 +8,8 @@ export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
 
   @Cron(CronExpression.EVERY_2_HOURS)
-  @Post('fetch-data')
-  async fetchData(): Promise<any> {
+  @Post('fetch-updated-data')
+  async fetchUpdatedData(): Promise<any> {
     console.log(`========================Cron job started========================`);
     console.log(`Fetching property data - Scheduled task running...`);
     try {
@@ -21,6 +21,7 @@ export class PropertyController {
             this.propertyService.fetchAndSaveRatesData(FeedUrls.RATES)
         ])
 
+        console.log(`========================Cron job completed========================`);
         return {
             status: 'success',
             message: 'Property data fetched and saved successfully',

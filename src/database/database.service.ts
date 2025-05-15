@@ -5,6 +5,7 @@ import { Accommodation } from './entities/accommodation.entity';
 import { Description } from './entities/description.entity';
 import { Availability } from './entities/availabilities.entity';
 import { Rate } from './entities/rates.entity';
+import { PropertyListing } from './entities/property-listing';
 
 @Injectable()
 export class DatabaseService {
@@ -12,7 +13,8 @@ export class DatabaseService {
 		@InjectModel(Accommodation.name, 'property_engine') private accommodationModel: Model<Accommodation>,
 		@InjectModel(Description.name, 'property_engine') private descriptionModel: Model<Description>,
 		@InjectModel(Availability.name, 'property_engine') private availabilityModel: Model<Availability>,
-		@InjectModel(Rate.name, 'property_engine') private rateModel: Model<Rate>
+		@InjectModel(Rate.name, 'property_engine') private rateModel: Model<Rate>,
+		@InjectModel(PropertyListing.name, 'property_engine') private propertyListingModel: Model<PropertyListing>
 	) {}
 	
 	async createAccommodation(accommodation: Accommodation[]) {
@@ -89,5 +91,46 @@ export class DatabaseService {
 			await session.endSession();
 			throw new Error(error);
 		}
+	}
+
+	async getListOfAccommodations() {
+		return this.accommodationModel.find({ }, { _id: 1, AccommodationId: 1 }).lean().exec();
+	}
+
+	async getAccommodationFromAccommodationId(accommodationId: string) {
+		return this.accommodationModel.findOne({ AccommodationId: accommodationId }).lean().exec();
+	}
+
+	async getAvailabilityFromAccommodationId(accommodationId: string) {
+		return this.availabilityModel.findOne({ AccommodationId: accommodationId }).lean().exec();
+	}
+
+	async getDescriptionFromAccommodationId(accommodationId: string) {
+		return this.descriptionModel.findOne({ AccommodationId: accommodationId }).lean().exec();
+	}
+
+	async getRatesFromAccommodationId(accommodationId: string) {
+		return this.rateModel.findOne({ AccommodationId: accommodationId }).lean().exec();
+	}
+
+	async createPropertyListing(propertyData: Partial<PropertyListing>): Promise<PropertyListing> {
+		const [createdListing] = await this.propertyListingModel.create([propertyData]);
+		return createdListing;
+	}
+
+	async findByPropertyId(query: { propertyId: string }): Promise<PropertyListing | null> {
+		return this.propertyListingModel.findOne(query).lean().exec();
+	}
+
+	async findByPropertyIdUpdateListing(
+		query: { propertyId: string },
+		update: Partial<PropertyListing>,
+		options: { new: boolean; runValidators: boolean },
+	): Promise<PropertyListing | null> {
+		return this.propertyListingModel.findOneAndUpdate(query, update, options).lean().exec();
+	}
+
+	async findByQuery(query: Record<string, any>): Promise<PropertyListing[]> {
+		return this.propertyListingModel.find(query).lean().exec();
 	}
 }

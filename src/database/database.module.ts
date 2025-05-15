@@ -6,6 +6,7 @@ import { Accommodation, AccommodationSchema } from './entities/accommodation.ent
 import { Description, DescriptionSchema } from './entities/description.entity';
 import { Rate, RateSchema } from './entities/rates.entity';
 import { Availability, AvailabilitySchema } from './entities/availabilities.entity';
+import { PropertyListing, PropertyListingSchema } from './entities/property-listing';
 
 @Module({
 	imports: [
@@ -29,6 +30,10 @@ import { Availability, AvailabilitySchema } from './entities/availabilities.enti
 				{
 					name: Rate.name,
 					schema: RateSchema,
+				},
+				{
+					name: PropertyListing.name,
+					schema: PropertyListingSchema,
 				}
 			], 
 		    'property_engine'
