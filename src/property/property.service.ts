@@ -61,6 +61,14 @@ export class PropertyService {
         return await this.databaseService.createGeography(geography);
     }
 
+    async fetchAndSaveServicesData(url: string): Promise<any> {
+        const jsonData: any = await this.fetchZipAndConvertToJson(url);
+        const services = jsonData.Services.Service;
+        const servicesInEnglish = this.parseServicesInEnglish(services);
+
+        return await this.databaseService.createServices(servicesInEnglish);
+    }
+
     async syncLocationFromGeography(): Promise<any> {
         const geography = await this.databaseService.getGeography();
 
@@ -102,6 +110,18 @@ export class PropertyService {
         });
 
         return result;
+    }
+
+    private parseServicesInEnglish(services: any[]): { code: string, name: string }[] {
+        return services.map((service) => {
+            const code = service.Code ?? '';
+            const name = service.Name?.[1]?.Text ?? '';
+            
+            return {
+                code,
+                name
+            }
+        });
     }
 
     private extractLocationsFromCountryData(countryData: any): any {

@@ -6,6 +6,7 @@ import { FeedUrls } from 'src/lib/config/default.config';
 export class PropertyController {
     constructor(private readonly propertyService: PropertyService) {}
 
+    // @Cron(CronExpression.EVERY_10_SECONDS)
     @Cron(CronExpression.EVERY_2_HOURS)
     @Post('fetch-updated-data')
     async fetchUpdatedData(): Promise<any> {
@@ -18,6 +19,7 @@ export class PropertyController {
                 this.propertyService.fetchAndSaveAvailabilitiesData(FeedUrls.AVAILABILITIES),
                 this.propertyService.fetchAndSaveRatesData(FeedUrls.RATES),
                 this.propertyService.fetchAndSaveGeographicAreasData(FeedUrls.GEOGRAPHIC_AREAS),
+                this.propertyService.fetchAndSaveServicesData(FeedUrls.SERVICES),
                 // this.propertyService.fetchAndSaveImagesData(FeedUrls.IMAGES),
                 // this.propertyService.fetchAndSaveFacilitiesData(FeedUrls.FACILITIES),
                 // this.propertyService.fetchAndSaveAmenitiesData(FeedUrls.AMENITIES),

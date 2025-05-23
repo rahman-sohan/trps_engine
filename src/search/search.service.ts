@@ -15,17 +15,14 @@ export class SearchService {
     }
 
     async getAvailableProperties(payload: any): Promise<any> {
-        // const { location, capacity, bedrooms, priceRange, amenities } = payload;
+        const { checkInDate, checkOutDate, adults, children, regionId, countryCode } = payload;
+        
+        const query = {
+            'location.locality.code': regionId
+        };
 
-        // const query = this.propertyListingService.buildPropertySearchQuery({
-        //     location,
-        //     capacity,
-        //     bedrooms,
-        //     priceRange,
-        //     amenities
-        // });
+        const availableProperties = await this.databaseService.getAvailableProperties(query);
 
-        const availableProperties = await this.databaseService.getAvailableProperties({});
         return availableProperties;
     }
 }

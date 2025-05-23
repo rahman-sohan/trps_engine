@@ -8,6 +8,7 @@ import { Rate } from './entities/rates.entity';
 import { PropertyListing } from './entities/property-listing';
 import { Geography } from './entities/geography.entity';
 import { Location } from './entities/location.entity';
+import { Service } from './entities/services.entity';
 @Injectable()
 export class DatabaseService {
     constructor(
@@ -18,6 +19,7 @@ export class DatabaseService {
         @InjectModel(Geography.name, 'property_engine') private geographyModel: Model<Geography>,
         @InjectModel(Location.name, 'property_engine') private locationModel: Model<Location>,
         @InjectModel(Rate.name, 'property_engine') private rateModel: Model<Rate>,
+        @InjectModel(Service.name, 'property_engine') private serviceModel: Model<Service>,
     ) {}
 
     async autoCompleteSearch(keyword: string): Promise<any> {
@@ -160,6 +162,25 @@ export class DatabaseService {
             await session.endSession();
 
             return geography;
+        } catch (error) {
+            await session.abortTransaction();
+            await session.endSession();
+            throw new Error(error);
+        }
+    }
+
+    async createServices(services: Service[]) {
+        const session = await this.serviceModel.startSession();
+        try {
+            session.startTransaction();
+
+            await this.serviceModel.deleteMany({});
+            await this.serviceModel.create(services, { ordered: true, session });
+
+            await session.commitTransaction();
+            await session.endSession();
+
+            return services;
         } catch (error) {
             await session.abortTransaction();
             await session.endSession();
