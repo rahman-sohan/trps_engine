@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { PropertyListing } from '../database/entities/property-listing';
 import { DatabaseService } from 'src/database/database.service';
 
@@ -204,43 +202,5 @@ export class PropertyListingService {
             return [];
         }
         return descriptionData.InternationalizedItem.map((item: any) => item.Language);
-    }
-
-    // Search method remains the same
-    buildPropertySearchQuery(filters: any): Record<string, any> {
-        const query: any = { status: 'active' };
-
-        if (filters.location) {
-            query['$or'] = [
-                {
-                    'location.country.name': { $regex: filters.location, $options: 'i' },
-                },
-                { 'location.city.name': { $regex: filters.location, $options: 'i' } },
-                { 'location.region.name': { $regex: filters.location, $options: 'i' } },
-            ];
-        }
-
-        if (filters.capacity) {
-            query['details.capacity.total'] = { $gte: parseInt(filters.capacity) };
-        }
-
-        if (filters.bedrooms) {
-            query['details.capacity.bedrooms'] = { $gte: parseInt(filters.bedrooms) };
-        }
-
-        if (filters.priceRange) {
-            query['pricing.basePrice'] = {
-                $gte: filters.priceRange.min,
-                $lte: filters.priceRange.max,
-            };
-        }
-
-        if (filters.amenities && Array.isArray(filters.amenities)) {
-            for (const amenity of filters.amenities) {
-                query[`details.amenities.${amenity}`] = true;
-            }
-        }
-
-        return query;
     }
 }

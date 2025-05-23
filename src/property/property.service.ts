@@ -128,7 +128,7 @@ export class PropertyService {
                     const districts = normalizeArray(locality.Districts?.District);
 
                     for (const district of districts) {
-                        const districtName = district?.Name || 'Not specified';
+                        const districtName = district?.Name || '';
                         const postalCode = district?.PostalCode || '';
                         const districtCode = district?.DistrictCode || null;
 

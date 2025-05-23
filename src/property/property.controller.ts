@@ -2,8 +2,6 @@ import { Controller, Post } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { FeedUrls } from 'src/lib/config/default.config';
-import { log } from 'console';
-
 @Controller('api/v1/property')
 export class PropertyController {
     constructor(private readonly propertyService: PropertyService) {}
@@ -37,7 +35,7 @@ export class PropertyController {
         }
     }
 
-    @Cron(CronExpression.EVERY_10_SECONDS)
+    @Cron(CronExpression.EVERY_2_HOURS)
     @Post('sync-location-from-geography')
     async syncLocationFromGeography(): Promise<any> {
         console.log(`Creating location from geography - Scheduled task running`);
