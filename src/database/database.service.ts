@@ -38,6 +38,7 @@ export class DatabaseService {
                 $project: {
                     _id: 0,
                     Country: 1,
+                    CountryCode: 1,
                     Region: 1,
                     City: 1,
                     Locality: 1,
