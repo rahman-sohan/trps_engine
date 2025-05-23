@@ -90,7 +90,7 @@ export class PropertyListingService {
                     },
                 },
                 pricing: {
-                    currency: accommodation.Currency,
+                    currency: accommodation?.Currency,
                     basePrice: basePrice.toString(),
                     cleaningFee: this.getServicePrice(accommodation, '10').toString(),
                     securityDeposit: this.getServicePrice(accommodation, '11').toString(),
@@ -98,7 +98,7 @@ export class PropertyListingService {
                 },
                 availability: {
                     instantBooking: false,
-                    minDaysNotice: availability.MinDaysNotice ?? '0',
+                    minDaysNotice: availability?.MinDaysNotice ?? '0', // Added null-safe check
                     availablePeriods: availabilityPeriods,
                 },
                 images: images,
