@@ -8,7 +8,7 @@ import { PropertyListingService } from './property-listing.service';
 
 @Module({
     imports: [CustomHttpModule, DatabaseModule],
-    providers: [PropertyService, XmlService],
+    providers: [PropertyService, XmlService, PropertyListingService],
     exports: [PropertyService, XmlService, PropertyListingService],
     controllers: [PropertyController],
 })

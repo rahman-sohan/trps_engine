@@ -109,7 +109,7 @@ export class PropertyService {
 
         const normalizeArray = (value: any) => (Array.isArray(value) ? value : [value]);
 
-        const locations = [];
+        const locations:any = [];
 
         for (const region of normalizeArray(regions)) {
             const regionName = region.Name;

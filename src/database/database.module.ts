@@ -7,7 +7,8 @@ import { Description, DescriptionSchema } from './entities/description.entity';
 import { Rate, RateSchema } from './entities/rates.entity';
 import { Availability, AvailabilitySchema } from './entities/availabilities.entity';
 import { PropertyListing, PropertyListingSchema } from './entities/property-listing';
-
+import { Geography, GeographySchema } from './entities/geography.entity';
+import { Location, LocationSchema } from './entities/location.entity';
 @Module({
     imports: [
         MongooseModule.forRoot(APP_CONFIG.MONGO_URI, {
@@ -34,6 +35,14 @@ import { PropertyListing, PropertyListingSchema } from './entities/property-list
                 {
                     name: PropertyListing.name,
                     schema: PropertyListingSchema,
+                },
+                {
+                    name: Geography.name,
+                    schema: GeographySchema,
+                },
+                {
+                    name: Location.name,
+                    schema: LocationSchema,
                 },
             ],
             'property_engine',
