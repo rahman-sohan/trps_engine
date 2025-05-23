@@ -16,7 +16,7 @@ export class SearchController {
         return await this.searchService.autoCompleteSearch(keyword);
     }
 
-    @Post('available-properties')
+    @Post('/available-properties')
     async searchProperty(@Body() payload: SearchPropertyDto): Promise<any> {
         const { checkInDate, checkOutDate, guests, regionId, countryCode } = payload;
         const { adults, children } = guests;
