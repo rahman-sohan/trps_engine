@@ -61,19 +61,20 @@ export class PropertyService {
         return await this.databaseService.createGeography(geography);
     }
 
-    async createAddressFromGeography(): Promise<any> {
+    async syncLocationFromGeography(): Promise<any> {
         const geography = await this.databaseService.getGeography();
 
-        Promise.all(
+        const result: any = await Promise.all(
             geography.map(async (country: any) => {
-                const singleCountryFeed = await this.extractLocationsFromCountryData(country);
-                await this.databaseService.createAddress(singleCountryFeed);
+                return await this.extractLocationsFromCountryData(country);
             }),
         );
 
+        await this.databaseService.createLocation(result.flat());
+
         return {
             status: 'success',
-            message: 'Address created successfully',
+            message: 'Location created successfully',
         };
     }
 
@@ -105,11 +106,12 @@ export class PropertyService {
 
     private extractLocationsFromCountryData(countryData: any): any {
         const countryName = countryData.Name;
+        const countryCode = countryData.CountryCode;
         const regions = countryData.Regions?.Region ?? [];
 
         const normalizeArray = (value: any) => (Array.isArray(value) ? value : [value]);
 
-        const locations:any = [];
+        const locations: any = [];
 
         for (const region of normalizeArray(regions)) {
             const regionName = region.Name;
@@ -134,6 +136,7 @@ export class PropertyService {
 
                         locations.push({
                             Country: countryName,
+                            CountryCode: countryCode,
                             Region: regionName,
                             City: cityName,
                             Locality: localityName,

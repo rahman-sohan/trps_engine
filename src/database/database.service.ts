@@ -170,18 +170,18 @@ export class DatabaseService {
         return this.geographyModel.find({}).lean().exec();
     }
 
-    async createAddress(address: Location[]) {
+    async createLocation(location: Location[]) {
         const session = await this.locationModel.startSession();
         try {
             session.startTransaction();
 
             await this.locationModel.deleteMany({});
-            await this.locationModel.create(address, { ordered: true, session });
+            await this.locationModel.create(location, { ordered: true, session });
 
             await session.commitTransaction();
             await session.endSession();
 
-            return address;
+            return location;
         } catch (error) {
             await session.abortTransaction();
             await session.endSession();

@@ -9,15 +9,18 @@ export class Location {
     Country: string;
 
     @Prop({ required: true })
+    CountryCode: string;
+
+    @Prop({ required: false })
     Region: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     City: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     Locality: string;
 
-    @Prop()
+    @Prop({ required: false })
     LocalityCode?: string;
 
     @Prop({ required: true })

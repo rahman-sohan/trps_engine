@@ -6,8 +6,12 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 export class SearchController {
     constructor(private readonly searchService: SearchService) {}
 
-    @Get('/auto-complete-search')
+    @Get('/auto-complete')
     async autoCompleteSearch(@Query('keyword') keyword: string) {
+        if (!keyword) {
+            keyword = 'dubai';
+        }
+        
         return await this.searchService.autoCompleteSearch(keyword);
     }
 

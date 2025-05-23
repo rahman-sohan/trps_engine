@@ -2,6 +2,7 @@ import { Controller, Post } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { FeedUrls } from 'src/lib/config/default.config';
+import { log } from 'console';
 
 @Controller('api/v1/property')
 export class PropertyController {
@@ -36,16 +37,15 @@ export class PropertyController {
         }
     }
 
-    @Cron(CronExpression.EVERY_2_HOURS)
-    @Post('create-address-from-geography')
-    async createAddressFromGeography(): Promise<any> {
-        console.log(`========================Cron job started========================`);
-        console.log(`Creating address from geography - Scheduled task running...`);
+    @Cron(CronExpression.EVERY_10_SECONDS)
+    @Post('sync-location-from-geography')
+    async syncLocationFromGeography(): Promise<any> {
+        console.log(`Creating location from geography - Scheduled task running`);
         try {
-            return this.propertyService.createAddressFromGeography();
+            return await this.propertyService.syncLocationFromGeography();
         } catch (error) {
-            console.error('Error creating address from geography:', error);
-            throw new Error('Error creating address from geography');
+            console.error('Error creating location from geography:', error);
+            throw new Error('Error creating location from geography');
         }
     }
 
