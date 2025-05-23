@@ -6,13 +6,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { SearchModule } from './search/search.module';
 
 @Module({
-  imports: [
-    PropertyModule, 
-    DatabaseModule,
-    ScheduleModule.forRoot(),
-    SearchModule
-  ],
-  controllers: [AppController],
-  providers: [],
+    imports: [PropertyModule, DatabaseModule, ScheduleModule.forRoot(), SearchModule],
+    controllers: [AppController],
+    providers: [],
 })
 export class AppModule {}

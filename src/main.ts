@@ -2,13 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule);
 
-	await app.startAllMicroservices();
+    await app.startAllMicroservices();
 
-	await app.listen(process.env.PORT ?? 3000);
-	console.log('----------------PROPERTY ENGINE---------------------');
-	console.log('APP IS RUNNING ON PORT', process.env.PORT ?? 3000);
+    await app.listen(process.env.PORT ?? 3000);
+    console.log('----------------PROPERTY ENGINE---------------------');
+    console.log('APP IS RUNNING ON PORT', process.env.PORT ?? 3000);
 }
 
 bootstrap();

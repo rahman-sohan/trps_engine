@@ -1,19 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 
-@Schema({collection: 'availabilities', timestamps: true})
+@Schema({ collection: 'availabilities', timestamps: true })
 export class Availability extends Document {
-  @Prop({ required: true })
-  AccommodationId: string;
+    @Prop({ required: true })
+    AccommodationId: string;
 
-  @Prop({ required: true })
-  OccupationalRuleId: string;
+    @Prop({ required: true })
+    OccupationalRuleId: string;
 
-  @Prop({ type: Object })
-  Availabilities: object;
+    @Prop({ type: Object })
+    Availabilities: object;
 
-  @Prop()
-  MinDaysNotice: string;
+    @Prop()
+    MinDaysNotice: string;
 }
 
 export const AvailabilitySchema = SchemaFactory.createForClass(Availability);

@@ -6,22 +6,15 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 export class SearchController {
     constructor(private readonly searchService: SearchService) {}
 
+    @Get('/auto-complete-search')
+    async autoCompleteSearch(@Query('keyword') keyword: string) {
+        return await this.searchService.autoCompleteSearch(keyword);
+    }
+
     @Post('available-properties')
     async searchProperty(@Body() payload: any): Promise<any> {
-        
         const availableProperties = await this.searchService.getAvailableProperties(payload);
 
         return availableProperties;
-    }
-
-    @Cron(CronExpression.EVERY_2_HOURS)
-    @Post('update-listing-data')
-    async updateListingData(): Promise<any> {
-        console.log(`========================Cron job started========================`);
-        console.log(`Seeding listing data - Scheduled task running...`);
-
-        await this.searchService.updateListingData();
-
-        return [];
     }
 }

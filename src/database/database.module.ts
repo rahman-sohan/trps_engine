@@ -9,38 +9,37 @@ import { Availability, AvailabilitySchema } from './entities/availabilities.enti
 import { PropertyListing, PropertyListingSchema } from './entities/property-listing';
 
 @Module({
-	imports: [
-		MongooseModule.forRoot(APP_CONFIG.MONGO_URI, {
-			connectionName: 'property_engine'
-		}),
-		MongooseModule.forFeature(
-			[
-				{
-					name: Accommodation.name,
-					schema: AccommodationSchema,
-				},
-				{
-					name: Description.name,
-					schema: DescriptionSchema,
-				},
-				{
-					name: Availability.name,
-					schema: AvailabilitySchema,
-				},
-				{
-					name: Rate.name,
-					schema: RateSchema,
-				},
-				{
-					name: PropertyListing.name,
-					schema: PropertyListingSchema,
-				}
-			], 
-		    'property_engine'
-		),
-	],
-	providers: [DatabaseService],
-	exports: [DatabaseService],
+    imports: [
+        MongooseModule.forRoot(APP_CONFIG.MONGO_URI, {
+            connectionName: 'property_engine',
+        }),
+        MongooseModule.forFeature(
+            [
+                {
+                    name: Accommodation.name,
+                    schema: AccommodationSchema,
+                },
+                {
+                    name: Description.name,
+                    schema: DescriptionSchema,
+                },
+                {
+                    name: Availability.name,
+                    schema: AvailabilitySchema,
+                },
+                {
+                    name: Rate.name,
+                    schema: RateSchema,
+                },
+                {
+                    name: PropertyListing.name,
+                    schema: PropertyListingSchema,
+                },
+            ],
+            'property_engine',
+        ),
+    ],
+    providers: [DatabaseService],
+    exports: [DatabaseService],
 })
-
 export class DatabaseModule {}

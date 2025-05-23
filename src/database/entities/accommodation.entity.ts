@@ -1,61 +1,61 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema({collection: 'accommodations', timestamps: true})
+@Schema({ collection: 'accommodations', timestamps: true })
 export class Accommodation extends Document {
-  @Prop({ required: true })
-  AccommodationId: string;
+    @Prop({ required: true })
+    AccommodationId: string;
 
-  @Prop()
-  UserId: string;
+    @Prop()
+    UserId: string;
 
-  @Prop()
-  Company: string;
+    @Prop()
+    Company: string;
 
-  @Prop()
-  CompanyId: string;
+    @Prop()
+    CompanyId: string;
 
-  @Prop()
-  AccommodationName: string;
+    @Prop()
+    AccommodationName: string;
 
-  @Prop()
-  IdGallery: string;
+    @Prop()
+    IdGallery: string;
 
-  @Prop()
-  OccupationalRuleId: string;
+    @Prop()
+    OccupationalRuleId: string;
 
-  @Prop()
-  PriceModifierId: string;
+    @Prop()
+    PriceModifierId: string;
 
-  @Prop()
-  TouristicRegistrationNumber: string;
+    @Prop()
+    TouristicRegistrationNumber: string;
 
-  @Prop()
-  Purpose: string;
+    @Prop()
+    Purpose: string;
 
-  @Prop()
-  UserKind: string;
+    @Prop()
+    UserKind: string;
 
-  @Prop({ type: Object })
-  MasterKind: object;
+    @Prop({ type: Object })
+    MasterKind: object;
 
-  @Prop({ type: Object })
-  LocalizationData: object;
+    @Prop({ type: Object })
+    LocalizationData: object;
 
-  @Prop()
-  AccommodationUnits: string;
+    @Prop()
+    AccommodationUnits: string;
 
-  @Prop()
-  Currency: string;
+    @Prop()
+    Currency: string;
 
-  @Prop({ type: Object })
-  VAT: object;
+    @Prop({ type: Object })
+    VAT: object;
 
-  @Prop({ type: Object })
-  Features: object;
+    @Prop({ type: Object })
+    Features: object;
 
-  @Prop({ type: Object })
-  CheckInCheckOutInfo: object;
+    @Prop({ type: Object })
+    CheckInCheckOutInfo: object;
 }
 
 export const AccommodationSchema = SchemaFactory.createForClass(Accommodation);
