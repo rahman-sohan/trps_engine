@@ -1,11 +1,19 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 
-@Controller()
+@Controller('')
 export class AppController {
     @Get('/')
     helthCheck(): any {
         return {
             status: 'OK',
+            message: `Server is running successfully ${new Date()}`,
+        };
+    }
+
+    @Post('/post')
+    checkPostRequest(): any {
+        return {
+            status: 'POST Request',
             message: `Server is running successfully ${new Date()}`,
         };
     }
