@@ -6,7 +6,7 @@ import { Accommodation, AccommodationSchema } from './entities/accommodation.ent
 import { Description, DescriptionSchema } from './entities/description.entity';
 import { Rate, RateSchema } from './entities/rates.entity';
 import { Availability, AvailabilitySchema } from './entities/availabilities.entity';
-import { Properties, PropertyListingSchema } from './entities/properties.entity';
+import { Properties, PropertiesSchema } from './entities/properties.entity';
 import { Geography, GeographySchema } from './entities/geography.entity';
 import { Location, LocationSchema } from './entities/location.entity';
 import { ServiceSchema } from './entities/services.entity';
@@ -40,7 +40,7 @@ console.log('.......................................')
                 },
                 {
                     name: Properties.name,
-                    schema: PropertyListingSchema,
+                    schema: PropertiesSchema,
                 },
                 {
                     name: Geography.name,

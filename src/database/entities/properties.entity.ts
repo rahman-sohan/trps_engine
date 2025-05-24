@@ -52,27 +52,10 @@ class Area {
 }
 
 @Schema({ _id: false })
-class Amenities {
-    @Prop({ default: false }) hasTV: boolean;
-    @Prop({ default: false }) hasSatelliteTV: boolean;
-    @Prop({ default: false }) hasWifi: boolean;
-    @Prop({ default: false }) hasElevator: boolean;
-    @Prop({ default: false }) hasGarden: boolean;
-    @Prop({ default: false }) hasParking: boolean;
-    @Prop({ default: false }) hasPool: boolean;
-    @Prop({ default: false }) hasAirConditioning: boolean;
-    @Prop({ default: false }) hasHeating: boolean;
-    @Prop({ default: false }) hasWashingMachine: boolean;
-    @Prop({ default: false }) hasDishwasher: boolean;
-    @Prop({ default: false }) hasTerrace: boolean;
-    @Prop({ default: false }) allowsPets: boolean;
-}
-
-@Schema({ _id: false })
 class Details {
     @Prop({ type: Capacity, required: true }) capacity: Capacity;
     @Prop({ type: Area }) area?: Area;
-    @Prop({ type: Amenities, required: true }) amenities: Amenities;
+    @Prop({ type: Object, required: true }) amenities: Object;
 }
 
 @Schema({ _id: false })
@@ -170,9 +153,14 @@ export class Properties extends Document {
     @Prop({ default: Date.now }) 
     lastUpdated: Date;
 
-    @Prop({ default: 'active' }) status: string;
+    @Prop({ type: Object, default: {} }) 
+    amenities: Object;
 
-    @Prop({ type: Rating }) rating?: Rating;
+    @Prop({ default: 'active' })
+    status: string;
+
+    @Prop({ type: Rating }) 
+    rating?: Rating;
 
     @Prop({ type: Object, default: {} }) 
     tags: Object;

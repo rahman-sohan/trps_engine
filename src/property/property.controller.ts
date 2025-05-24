@@ -45,8 +45,6 @@ export class PropertyController {
         console.log(`========================Cron job started========================`);
         console.log(`Seeding listing data - Scheduled task running...`);
 
-        await this.propertyService.updateListingData();
-
-        return [];
+        return await this.propertyService.updateListingData();
     }
 }

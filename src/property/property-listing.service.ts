@@ -188,7 +188,7 @@ export class PropertyListingService {
 
         return pictures.map((picture: any, index: number) => ({
             url: picture.OriginalURI,
-            caption: picture.Descriptions.Description,
+            caption: "",
             isPrimary: index === 0,
         }));
     }
