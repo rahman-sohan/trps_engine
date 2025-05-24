@@ -72,22 +72,7 @@ export class PropertyListingService {
                         size: accommodation.Features.Distribution.AreaHousing.Area ?? '0',
                         unit: accommodation.Features.Distribution.AreaHousing.AreaUnit,
                     },
-                    amenities: {
-                        hasTV: accommodation.Features.HouseCharacteristics.TV === 'true',
-                        hasSatelliteTV: accommodation.Features.HouseCharacteristics.TVSatellite?.Value === 'true',
-                        hasWifi: this.hasService(accommodation, '8'),
-                        hasElevator: accommodation.Features.HouseCharacteristics.Elevator === 'true',
-                        hasGarden: accommodation.Features.HouseCharacteristics.Garden === 'true',
-                        hasParking: this.hasService(accommodation, '3'),
-                        hasPool: !!accommodation.Features.HouseCharacteristics.SwimmingPool,
-                        hasAirConditioning: false,
-                        hasHeating: this.hasService(accommodation, '1'),
-                        hasWashingMachine:
-                            accommodation.Features.HouseCharacteristics.Kitchen.WashingMachine === 'true',
-                        hasDishwasher: accommodation.Features.HouseCharacteristics.Kitchen.Dishwasher === 'true',
-                        hasTerrace: accommodation.Features.HouseCharacteristics.Terrace === 'true',
-                        allowsPets: this.hasService(accommodation, '9'),
-                    },
+                    amenities: accommodation.Features.HouseCharacteristics,
                 },
                 pricing: {
                     currency: accommodation?.Currency,
@@ -125,7 +110,6 @@ export class PropertyListingService {
                     ExtrasSummary: description.InternationalizedItem[1].ExtrasSummary
                 },
                 features: {
-                    HouseCharacteristics: accommodation.Features.HouseCharacteristics,
                     Distribution: accommodation.Features.Distribution,
                     ExtrasAndServices: accommodation.Features.ExtrasAndServices,
                     Location: accommodation.Features.Location,
