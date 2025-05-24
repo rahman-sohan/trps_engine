@@ -1,12 +1,16 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Inject, Post } from '@nestjs/common';
 
 @Controller('')
 export class AppController {
+    constructor(
+        @Inject('STARTUP_TIME') private readonly startupTime: Date,
+    ) {}
+    
     @Get('/')
     helthCheck(): any {
         return {
             status: 'OK',
-            message: `Server is running successfully ${new Date()}`,
+            message: `Server is running successfully since ${this.startupTime.toISOString()}`
         };
     }
 
