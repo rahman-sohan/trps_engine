@@ -13,24 +13,14 @@ export class PropertyController {
         console.log(`========================Cron job started========================`);
         console.log(`Fetching property data - Scheduled task running...`);
         try {
-            await Promise.all([
+            return await Promise.all([
                 this.propertyService.fetchAndSaveAccommodationsData(FeedUrls.ACCOMMODATIONS),
-                this.propertyService.fetchAndSaveDescriptionsData(FeedUrls.DESCRIPTIONS),
-                this.propertyService.fetchAndSaveAvailabilitiesData(FeedUrls.AVAILABILITIES),
-                this.propertyService.fetchAndSaveRatesData(FeedUrls.RATES),
-                this.propertyService.fetchAndSaveGeographicAreasData(FeedUrls.GEOGRAPHIC_AREAS),
-                this.propertyService.fetchAndSaveServicesData(FeedUrls.SERVICES),
-                // this.propertyService.fetchAndSaveImagesData(FeedUrls.IMAGES),
-                // this.propertyService.fetchAndSaveFacilitiesData(FeedUrls.FACILITIES),
-                // this.propertyService.fetchAndSaveAmenitiesData(FeedUrls.AMENITIES),
-                // this.propertyService.fetchAndSavePoliciesData(FeedUrls.POLICIES)
+                // this.propertyService.fetchAndSaveDescriptionsData(FeedUrls.DESCRIPTIONS),
+                // this.propertyService.fetchAndSaveAvailabilitiesData(FeedUrls.AVAILABILITIES),
+                // this.propertyService.fetchAndSaveRatesData(FeedUrls.RATES),
+                // this.propertyService.fetchAndSaveGeographicAreasData(FeedUrls.GEOGRAPHIC_AREAS),
+                // this.propertyService.fetchAndSaveServicesData(FeedUrls.SERVICES)
             ]);
-
-            console.log(`========================Cron job completed========================`);
-            return {
-                status: 'success',
-                message: 'Property data fetched and saved successfully',
-            };
         } catch (error) {
             console.error('Error fetching property data:', error);
             throw new Error('Error fetching property data');
