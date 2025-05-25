@@ -52,27 +52,10 @@ class Area {
 }
 
 @Schema({ _id: false })
-class Amenities {
-    @Prop({ default: false }) hasTV: boolean;
-    @Prop({ default: false }) hasSatelliteTV: boolean;
-    @Prop({ default: false }) hasWifi: boolean;
-    @Prop({ default: false }) hasElevator: boolean;
-    @Prop({ default: false }) hasGarden: boolean;
-    @Prop({ default: false }) hasParking: boolean;
-    @Prop({ default: false }) hasPool: boolean;
-    @Prop({ default: false }) hasAirConditioning: boolean;
-    @Prop({ default: false }) hasHeating: boolean;
-    @Prop({ default: false }) hasWashingMachine: boolean;
-    @Prop({ default: false }) hasDishwasher: boolean;
-    @Prop({ default: false }) hasTerrace: boolean;
-    @Prop({ default: false }) allowsPets: boolean;
-}
-
-@Schema({ _id: false })
 class Details {
     @Prop({ type: Capacity, required: true }) capacity: Capacity;
     @Prop({ type: Area }) area?: Area;
-    @Prop({ type: Amenities, required: true }) amenities: Amenities;
+    @Prop({ type: Object, required: true }) amenities: Object;
 }
 
 @Schema({ _id: false })
@@ -126,33 +109,65 @@ class Rating {
     @Prop() count: string;
 }
 
-@Schema({ collection: 'property_listings', timestamps: true })
-export class PropertyListing extends Document {
-    @Prop({ required: true, unique: true }) propertyId: string;
-    @Prop({ required: true }) name: string;
-    @Prop({ required: true }) type: string;
-    @Prop({ required: true }) description: string;
-    @Prop({ type: Location, required: true }) location: Location;
-    @Prop({ type: Details, required: true }) details: Details;
-    @Prop({ type: Pricing, required: true }) pricing: Pricing;
-    @Prop({ type: Availability, required: true }) availability: Availability;
-    @Prop({ type: [Image], default: [] }) images: Image[];
-    @Prop({ type: Rules }) rules?: Rules;
-    @Prop({ type: [String], default: [] }) languages: string[];
-    @Prop({ default: Date.now }) lastUpdated: Date;
-    @Prop({ default: 'active' }) status: string;
-    @Prop({ type: Rating }) rating?: Rating;
+@Schema({ collection: 'properties', timestamps: true })
+export class Properties extends Document {
+    @Prop({ required: true, unique: true })
+    propertyId: string;
+    
+    @Prop({ required: true }) 
+    name: string;
+
+    @Prop({ required: true }) 
+    type: string;
+
+    @Prop({ required: true }) 
+    description: string;
+    
+    @Prop({ type: Location, required: true }) 
+    location: Location;
+
+    @Prop({ type: Details, required: true })
+    details: Details;
+    
+    @Prop({ type: Pricing, required: true })
+    pricing: Pricing;
+
+    @Prop({ type: Availability, required: true }) 
+    availability: Availability;
+
+    @Prop({ type: [Image], default: [] }) 
+    images: Image[];
+
+    @Prop({ type: Rules }) 
+    rules?: Rules;
+
+    @Prop({ type: Object, default: {} }) 
+    booking_data: Object;
+
+    @Prop({ type: Object, default: {} }) 
+    extras: Object;
+
+    @Prop({ type: Object, default: {} }) 
+    features: Object;
+
+    @Prop({ default: Date.now }) 
+    lastUpdated: Date;
+
+    @Prop({ type: Object, default: {} }) 
+    amenities: Object;
+
+    @Prop({ default: 'active' })
+    status: string;
+
+    @Prop({ type: Rating }) 
+    rating?: Rating;
+
+    @Prop({ type: Object, default: {} }) 
+    tags: Object;
+
+    @Prop({ type: Object, default: {} }) 
+    reviews: Object;
 }
 
-export const PropertyListingSchema = SchemaFactory.createForClass(PropertyListing);
+export const PropertiesSchema = SchemaFactory.createForClass(Properties);
 
-// Indexes
-PropertyListingSchema.index({ 'location.country.code': 1 });
-PropertyListingSchema.index({ status: 1 });
-PropertyListingSchema.index({
-    'location.country.name': 'text',
-    'location.city.name': 'text',
-    'location.region.name': 'text',
-    name: 'text',
-    description: 'text',
-});

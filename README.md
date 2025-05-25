@@ -1,14 +1,14 @@
-# trps-backend
+# trps-backend  
 
-TRPS ENGINE 
+TRPS ENGINE  
 
-## Deployment steps:
-az login
-az acr login --name trpsapp
-docker build -t trps-engine .
-docker tag trps-engine trpsapp.azurecr.io/trps-engine:latest
-docker push trpsapp.azurecr.io/trps-engine:latest
+## Deployment steps:  
+az login  
+az acr login --name trpsapp  
+docker build --no-cache -t trps-engine .  
+docker tag trps-engine trpsapp.azurecr.io/trps-engine:latest  
+docker push trpsapp.azurecr.io/trps-engine:latest  
 
-### Test the doker image in local env:
+### Test the doker image in local env:  
 
-docker container run -d -p 5000:5000 trps-engine
+docker container run -d -p 5000:5000 trps-engine  

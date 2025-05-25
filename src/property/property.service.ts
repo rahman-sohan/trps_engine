@@ -89,7 +89,7 @@ export class PropertyService {
     async updateListingData(): Promise<any> {
         const getListOfAccommodations = await this.databaseService.getListOfAccommodations();
         let count = 0;
-        const result = getListOfAccommodations.map(async (accommodation) => {
+        const result = await Promise.all(getListOfAccommodations.map(async (accommodation) => {
             const [getAccommodation, getAvailability, getDescription, getRates] = await Promise.all([
                 this.databaseService.getAccommodationFromAccommodationId(accommodation.AccommodationId),
                 this.databaseService.getAvailabilityFromAccommodationId(accommodation.AccommodationId),
@@ -107,7 +107,7 @@ export class PropertyService {
             console.log(count++);
 
             return result;
-        });
+        }));
 
         return result;
     }

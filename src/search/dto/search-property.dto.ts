@@ -32,4 +32,12 @@ export class SearchPropertyDto {
     @IsString()
     @IsOptional()
     countryCode?: string;
+
+    @IsNumber()
+    @IsOptional()
+    page?: number;
+
+    @IsNumber()
+    @IsOptional()
+    pageSize?: number;
 } 

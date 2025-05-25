@@ -7,12 +7,16 @@ async function bootstrap() {
 
     app.enableCors({
         origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+        allowedHeaders: '*',
     });
 
-    app.useGlobalPipes(new ValidationPipe());
-
+    app.useGlobalPipes(new ValidationPipe({
+        whitelist: true,
+        transform: true,
+        forbidNonWhitelisted: true,
+    }));
+    
     await app.startAllMicroservices();
 
     await app.listen(process.env.PORT ?? 3000);
@@ -21,3 +25,4 @@ async function bootstrap() {
 }
 
 bootstrap();
+    

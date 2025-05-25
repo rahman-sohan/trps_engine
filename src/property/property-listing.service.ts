@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PropertyListing } from '../database/entities/property-listing';
+import { Properties } from '../database/entities/properties.entity';
 import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class PropertyListingService {
         availability: any;
         description: any;
         rates: any;
-    }): Promise<PropertyListing> {
+    }): Promise<Properties> {
         try {
             const { accommodation, availability, description, rates } = data;
 
@@ -19,7 +19,7 @@ export class PropertyListingService {
             const availabilityPeriods = this.transformAvailabilityPeriods(availability);
             const basePrice = this.getBasePrice(rates);
 
-            const propertyData: Partial<PropertyListing> = {
+            const propertyData: Partial<Properties> = {
                 propertyId: accommodation.AccommodationId,
                 name: accommodation.AccommodationName,
                 type: accommodation.MasterKind.MasterKindName,
@@ -72,22 +72,7 @@ export class PropertyListingService {
                         size: accommodation.Features.Distribution.AreaHousing.Area ?? '0',
                         unit: accommodation.Features.Distribution.AreaHousing.AreaUnit,
                     },
-                    amenities: {
-                        hasTV: accommodation.Features.HouseCharacteristics.TV === 'true',
-                        hasSatelliteTV: accommodation.Features.HouseCharacteristics.TVSatellite?.Value === 'true',
-                        hasWifi: this.hasService(accommodation, '8'),
-                        hasElevator: accommodation.Features.HouseCharacteristics.Elevator === 'true',
-                        hasGarden: accommodation.Features.HouseCharacteristics.Garden === 'true',
-                        hasParking: this.hasService(accommodation, '3'),
-                        hasPool: !!accommodation.Features.HouseCharacteristics.SwimmingPool,
-                        hasAirConditioning: false,
-                        hasHeating: this.hasService(accommodation, '1'),
-                        hasWashingMachine:
-                            accommodation.Features.HouseCharacteristics.Kitchen.WashingMachine === 'true',
-                        hasDishwasher: accommodation.Features.HouseCharacteristics.Kitchen.Dishwasher === 'true',
-                        hasTerrace: accommodation.Features.HouseCharacteristics.Terrace === 'true',
-                        allowsPets: this.hasService(accommodation, '9'),
-                    },
+                    amenities: accommodation.Features.HouseCharacteristics,
                 },
                 pricing: {
                     currency: accommodation?.Currency,
@@ -111,7 +96,25 @@ export class PropertyListingService {
                     minimumStay: '1',
                     cancellationPolicy: '',
                 },
-                languages: this.getAvailableLanguages(description),
+                booking_data: {
+                    Language: description.InternationalizedItem[1].Language,
+                    DetailsURL: description.InternationalizedItem[1].DetailsURL,
+                    BookingURL: description.InternationalizedItem[1].BookingURL,
+                    ContactURL: description.InternationalizedItem[1].ContactURL,
+                },
+                extras: {
+                    MasterKind: {
+                        MasterKindCode: description.InternationalizedItem[1].MasterKind.MasterKindCode,
+                        MasterKindName: description.InternationalizedItem[1].MasterKind.MasterKindName
+                    },
+                    ExtrasSummary: description.InternationalizedItem[1].ExtrasSummary
+                },
+                features: {
+                    Distribution: accommodation.Features.Distribution,
+                    ExtrasAndServices: accommodation.Features.ExtrasAndServices,
+                    Location: accommodation.Features.Location,
+                },
+                reviews: accommodation.Reviews,
                 status: 'active',
             };
 
@@ -185,7 +188,7 @@ export class PropertyListingService {
 
         return pictures.map((picture: any, index: number) => ({
             url: picture.OriginalURI,
-            caption: '',
+            caption: "",
             isPrimary: index === 0,
         }));
     }
@@ -204,3 +207,28 @@ export class PropertyListingService {
         return descriptionData.InternationalizedItem.map((item: any) => item.Language);
     }
 }
+
+
+// {
+//   "Reviews": {
+//     "Review": {
+//       "Language": "en",
+//       "Rating": "5",
+//       "Title": "TEST negative review.",
+//       "PositiveComment": "Positive comment 1.\nPositive comment 2.",
+//       "NegativeComment": "Negative comment 1.\nNegative comment 2.",
+//       "RatingAspects": {
+//         "RatingAspect": [
+//           { "AspectType": "SERVICE", "Rating": "3" },
+//           { "AspectType": "CLEANLINESS", "Rating": "3" },
+//           { "AspectType": "ACCOMMODATION", "Rating": "6" },
+//           { "AspectType": "LOCATION", "Rating": "6" },
+//           { "AspectType": "VALUE_FOR_MONEY", "Rating": "4" }
+//         ]
+//       },
+//       "BookingStartDate": "1900-01-01",
+//       "BookingEndDate": "1900-01-02",
+//       "ReviewDate": "2024-06-13"
+//     }
+//   }
+// }
