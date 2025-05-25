@@ -32,6 +32,11 @@ export class SearchController {
         return availableProperties;
     }
 
+    @Get('/featured-properties')
+    async getFeaturedProperties(@Param('regionId') regionId: string): Promise<any> {
+        return await this.searchService.getFeaturedProperties(regionId);
+    }
+
     @Get('/property-details/:propertyId')
     async getPropertyDetails(@Param('propertyId') propertyId: string): Promise<any> {
         return await this.searchService.getPropertyDetails(propertyId);

@@ -30,39 +30,17 @@ export class SearchService {
         const availableProperties = await this.databaseService.getAvailableProperties(query);
         const total_properties = await this.databaseService.getTotalPropertiesCount(query);
         
-        const customResponse = availableProperties.map((property) => {
-            const propertyType: any = property.extras?.['MasterKind']?.['MasterKindName'];
-
-            return {
-                property_Id: property.propertyId,
-                property_name: property.name,
-                property_fullAddress: property.fullAddress,
-                property_type: propertyType,
-                property_image: property.images[0] ?? {},
-                property_price: {
-                    basePrice: property.pricing.basePrice,
-                    totalPrice: (Number(property.pricing.basePrice) * numberOfNights).toFixed(2),
-                    numberOfNights: numberOfNights,
-                    cleaningFee: property.pricing.cleaningFee,
-                    securityDeposit: property.pricing.securityDeposit,
-                    vatIncluded: property.pricing.vatIncluded,
-                },
-                property_details: {
-                    maxOccupation: property.details.capacity.maxOccupation,
-                    minOccupation: property.details.capacity.minOccupation,
-                    totalBeds: property.details.capacity.bedrooms == "" ? 'N/A' : property.details.capacity.bedrooms,
-                    bathrooms: property.details.capacity.bathrooms
-                },
-                property_rating: property.rating,
-                property_location: property.location,
-                property_reviews: property.reviews ?? {},
-            };
-        });
-        
         return {
             total_properties,
-            properties: customResponse,
+            properties: this.customListingResponse(availableProperties, numberOfNights),
         };
+    }
+
+    async getFeaturedProperties(regionId: string): Promise<any> {
+        regionId = '190';
+        const featuredProperties = await this.databaseService.getFeaturedProperties(regionId);
+
+        return this.customListingResponse(featuredProperties, 1);
     }
 
     async getPropertyDetails(propertyId: string): Promise<any> {
@@ -89,5 +67,40 @@ export class SearchService {
             property_reviews: property.reviews ?? {},
             property_rating: property.rating,
         };
+    }
+
+    private customListingResponse(availableProperties: any, numberOfNights: number): any {
+        return availableProperties.map((property) => {
+            const propertyType: any = property.extras?.['MasterKind']?.['MasterKindName'];
+
+            return {
+                property_Id: property.propertyId,
+                property_name: property.name,
+                property_fullAddress: property.fullAddress,
+                property_type: propertyType,
+                property_image: property.images[0] ?? {
+                    url: "https://fakeimg.pl/600x400",
+                    caption: "",
+                    isPrimary: true
+                },
+                property_price: {
+                    basePrice: property.pricing.basePrice,
+                    totalPrice: (Number(property.pricing.basePrice) * numberOfNights).toFixed(2),
+                    numberOfNights: numberOfNights,
+                    cleaningFee: property.pricing.cleaningFee,
+                    securityDeposit: property.pricing.securityDeposit,
+                    vatIncluded: property.pricing.vatIncluded,
+                },
+                property_details: {
+                    maxOccupation: property.details.capacity.maxOccupation,
+                    minOccupation: property.details.capacity.minOccupation,
+                    totalBeds: property.details.capacity.bedrooms == "" ? 'N/A' : property.details.capacity.bedrooms,
+                    bathrooms: property.details.capacity.bathrooms
+                },
+                property_rating: property.rating,
+                property_location: property.location,
+                property_reviews: property.reviews ?? {},
+            };
+        });
     }
 }

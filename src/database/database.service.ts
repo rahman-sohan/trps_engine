@@ -263,4 +263,12 @@ export class DatabaseService {
     async getPropertyDetails(propertyId: string): Promise<Properties | null> {
         return this.propertyModel.findOne({ propertyId }).lean().exec();
     }
+
+    async getFeaturedProperties(regionId: string): Promise<Properties[]> {
+        const query = {
+            'location.region.code': regionId
+        };
+        
+        return this.propertyModel.find(query).limit(10).lean().exec();
+    }
 }

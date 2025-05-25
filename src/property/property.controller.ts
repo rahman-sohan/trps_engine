@@ -27,7 +27,7 @@ export class PropertyController {
         }
     }
 
-    @Cron(CronExpression.EVERY_2_HOURS)
+    @Cron(CronExpression.EVERY_12_HOURS)
     @Post('sync-location-from-geography')
     async syncLocationFromGeography(): Promise<any> {
         console.log(`Creating location from geography - Scheduled task running`);
@@ -39,7 +39,7 @@ export class PropertyController {
         }
     }
 
-    @Cron(CronExpression.EVERY_2_HOURS)
+    @Cron(CronExpression.EVERY_12_HOURS)
     @Post('sync-properties-data')
     async syncPropertiesData(): Promise<any> {
         console.log(`========================Cron job started========================`);
