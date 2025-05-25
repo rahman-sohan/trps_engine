@@ -78,8 +78,8 @@ class AvailablePeriod {
 class Availability {
     @Prop({ default: false }) instantBooking: boolean;
     @Prop({ default: 1 }) minDaysNotice: string;
-    @Prop({ type: [AvailablePeriod], default: [] })
-    availablePeriods: AvailablePeriod[];
+    @Prop({ type: Object, default: {} })
+    availablePeriods: Object;
 }
 
 @Schema({ _id: false })
@@ -103,12 +103,6 @@ class Rules {
     @Prop() cancellationPolicy?: string;
 }
 
-@Schema({ _id: false })
-class Rating {
-    @Prop() average: string;
-    @Prop() count: string;
-}
-
 @Schema({ collection: 'properties', timestamps: true })
 export class Properties extends Document {
     @Prop({ required: true, unique: true })
@@ -116,6 +110,9 @@ export class Properties extends Document {
     
     @Prop({ required: true }) 
     name: string;
+
+    @Prop({ required: true }) 
+    fullAddress: string;
 
     @Prop({ required: true }) 
     type: string;
@@ -159,8 +156,8 @@ export class Properties extends Document {
     @Prop({ default: 'active' })
     status: string;
 
-    @Prop({ type: Rating }) 
-    rating?: Rating;
+    @Prop({ default: '0' }) 
+    rating: string;
 
     @Prop({ type: Object, default: {} }) 
     tags: Object;
@@ -171,3 +168,5 @@ export class Properties extends Document {
 
 export const PropertiesSchema = SchemaFactory.createForClass(Properties);
 
+// Create index for propertyId
+PropertiesSchema.index({ propertyId: 1 }, { unique: true });

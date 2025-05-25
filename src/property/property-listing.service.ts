@@ -19,11 +19,18 @@ export class PropertyListingService {
             const availabilityPeriods = this.transformAvailabilityPeriods(availability);
             const basePrice = this.getBasePrice(rates);
 
+            const localityName = accommodation.LocalizationData.Locality.Name || '';
+            const regionName = accommodation.LocalizationData.Region.Name || '';
+            const countryName = accommodation.LocalizationData.Country.Name || '';
+
+            const fullAddress = `${localityName}, ${regionName}, ${countryName}`;
+
             const propertyData: Partial<Properties> = {
                 propertyId: accommodation.AccommodationId,
                 name: accommodation.AccommodationName,
-                type: accommodation.MasterKind.MasterKindName,
+                type: description.InternationalizedItem[1].MasterKind.MasterKindName,
                 description: this.getDescriptionInEnglish(description),
+                fullAddress: fullAddress,
                 location: {
                     country: {
                         code: accommodation.LocalizationData.Country.CountryCode,
@@ -83,7 +90,7 @@ export class PropertyListingService {
                 },
                 availability: {
                     instantBooking: false,
-                    minDaysNotice: availability?.MinDaysNotice ?? '0', // Added null-safe check
+                    minDaysNotice: availability?.MinDaysNotice ?? '0',
                     availablePeriods: availabilityPeriods,
                 },
                 images: images,
@@ -114,6 +121,7 @@ export class PropertyListingService {
                     ExtrasAndServices: accommodation.Features.ExtrasAndServices,
                     Location: accommodation.Features.Location,
                 },
+                rating: accommodation?.Reviews?.Review?.Rating ?? '0', 
                 reviews: accommodation.Reviews,
                 status: 'active',
             };

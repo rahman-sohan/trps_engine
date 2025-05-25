@@ -1,12 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { PropertyListingService } from '../property/property-listing.service';
 
 @Injectable()
 export class SearchService {
     constructor(
-        private readonly databaseService: DatabaseService,
-        private readonly propertyListingService: PropertyListingService,
+        private readonly databaseService: DatabaseService
     ) {}
 
     async autoCompleteSearch(keyword: string): Promise<any> {
@@ -16,13 +15,75 @@ export class SearchService {
 
     async getAvailableProperties(payload: any): Promise<any> {
         const { checkInDate, checkOutDate, adults, children, regionId, countryCode } = payload;
-        
+        const numberOfNights = (new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) / (1000 * 60 * 60 * 24);
+        const numberOfGuests = adults + children;
+
         const query = {
-            'location.locality.code': regionId
+            'location.locality.code': regionId,
+            // 'availability.availablePeriods.StartDate': { $lte: checkInDate },
+            // 'availability.availablePeriods.EndDate': { $gte: checkOutDate },
+            // 'details.capacity.minOccupation': { $lte: numberOfGuests },
+            // 'details.capacity.maxOccupation': { $gte: numberOfGuests },
+            // 'availability.availablePeriods.State': 'Available',
         };
 
         const availableProperties = await this.databaseService.getAvailableProperties(query);
 
-        return availableProperties;
+        const customResponse = availableProperties.map((property) => {
+            const propertyType: any = property.extras?.['MasterKind']?.['MasterKindName'];
+
+            return {
+                property_Id: property.propertyId,
+                property_name: property.name,
+                property_fullAddress: property.fullAddress,
+                property_type: propertyType,
+                property_image: property.images[0],
+                property_price: {
+                    basePrice: property.pricing.basePrice,
+                    totalPrice: (Number(property.pricing.basePrice) * numberOfNights).toFixed(2),
+                    numberOfNights: numberOfNights,
+                    cleaningFee: property.pricing.cleaningFee,
+                    securityDeposit: property.pricing.securityDeposit,
+                    vatIncluded: property.pricing.vatIncluded,
+                },
+                property_details: {
+                    maxOccupation: property.details.capacity.maxOccupation,
+                    minOccupation: property.details.capacity.minOccupation,
+                    totalBeds: property.details.capacity.bedrooms == "" ? 'N/A' : property.details.capacity.bedrooms,
+                    bathrooms: property.details.capacity.bathrooms
+                },
+                property_rating: property.rating,
+                property_location: property.location,
+                property_reviews: property.reviews ?? {},
+            };
+        });
+        
+        return customResponse;
+    }
+
+    async getPropertyDetails(propertyId: string): Promise<any> {
+        const property = await this.databaseService.getPropertyDetails(propertyId);
+
+        if (!property) {
+            throw new NotFoundException('Property not found');
+        }
+
+        return {
+            property_id: property.propertyId,
+            property_name: property.name,
+            property_type: property.type,
+            property_description: property.description,
+            property_fullAddress: property.fullAddress,
+            property_location: property.location,
+            property_image: property.images,
+            property_price: property.pricing,
+            property_details: property.details,
+            property_rules: property.rules,
+            property_extra_services: property.extras,
+            property_features: property.features,
+            property_availability: property.availability,
+            property_reviews: property.reviews ?? {},
+            property_rating: property.rating,
+        };
     }
 }

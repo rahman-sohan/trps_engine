@@ -15,7 +15,7 @@ export class DatabaseService {
         @InjectModel(Accommodation.name, 'property_engine')private accommodationModel: Model<Accommodation>,
         @InjectModel(Description.name, 'property_engine') private descriptionModel: Model<Description>,
         @InjectModel(Availability.name, 'property_engine') private availabilityModel: Model<Availability>,
-        @InjectModel(Properties.name, 'property_engine') private propertyListingModel: Model<Properties>,
+        @InjectModel(Properties.name, 'property_engine') private propertyModel: Model<Properties>,
         @InjectModel(Geography.name, 'property_engine') private geographyModel: Model<Geography>,
         @InjectModel(Location.name, 'property_engine') private locationModel: Model<Location>,
         @InjectModel(Rate.name, 'property_engine') private rateModel: Model<Rate>,
@@ -232,12 +232,12 @@ export class DatabaseService {
     }
 
     async createPropertyListing(propertyData: Partial<Properties>): Promise<Properties> {
-        const [createdListing] = await this.propertyListingModel.create([propertyData]);
+        const [createdListing] = await this.propertyModel.create([propertyData]);
         return createdListing;
     }
 
     async findByPropertyId(query: { propertyId: string }): Promise<Properties | null> {
-        return this.propertyListingModel.findOne(query).lean().exec();
+        return this.propertyModel.findOne(query).lean().exec();
     }
 
     async findByPropertyIdUpdateListing(
@@ -245,14 +245,18 @@ export class DatabaseService {
         update: Partial<Properties>,
         options: { new: boolean; runValidators: boolean },
     ): Promise<Properties | null> {
-        return this.propertyListingModel.findOneAndUpdate(query, update, options).lean().exec();
+        return this.propertyModel.findOneAndUpdate(query, update, options).lean().exec();
     }
 
     async findByQuery(query: Record<string, any>): Promise<Properties[]> {
-        return this.propertyListingModel.find(query).lean().exec();
+        return this.propertyModel.find(query).lean().exec();
     }
 
     async getAvailableProperties(query: Record<string, any>): Promise<Properties[]> {
-        return this.propertyListingModel.find(query).limit(10).lean().exec();
+        return this.propertyModel.find(query).limit(10).lean().exec();
+    }
+
+    async getPropertyDetails(propertyId: string): Promise<Properties | null> {
+        return this.propertyModel.findOne({ propertyId }).lean().exec();
     }
 }
