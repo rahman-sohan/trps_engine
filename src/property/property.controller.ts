@@ -40,11 +40,11 @@ export class PropertyController {
     }
 
     @Cron(CronExpression.EVERY_2_HOURS)
-    @Post('update-listing-data')
-    async updateListingData(): Promise<any> {
+    @Post('sync-properties-data')
+    async syncPropertiesData(): Promise<any> {
         console.log(`========================Cron job started========================`);
         console.log(`Seeding listing data - Scheduled task running...`);
 
-        return await this.propertyService.updateListingData();
+        return await this.propertyService.syncPropertiesData();
     }
 }

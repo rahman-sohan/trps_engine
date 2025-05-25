@@ -86,7 +86,7 @@ export class PropertyService {
         };
     }
 
-    async updateListingData(): Promise<any> {
+    async syncPropertiesData(): Promise<any> {
         const getListOfAccommodations = await this.databaseService.getListOfAccommodations();
         let count = 0;
         const result = await Promise.all(getListOfAccommodations.map(async (accommodation) => {

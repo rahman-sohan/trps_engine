@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { SearchService } from './search.service';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { SearchPropertyDto } from './dto/search-property.dto';
 
 @Controller('api/v1/search')
@@ -31,5 +30,10 @@ export class SearchController {
         });
 
         return availableProperties;
+    }
+
+    @Get('/property-details/:propertyId')
+    async getPropertyDetails(@Param('propertyId') propertyId: string): Promise<any> {
+        return await this.searchService.getPropertyDetails(propertyId);
     }
 }
