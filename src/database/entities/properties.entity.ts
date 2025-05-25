@@ -168,5 +168,3 @@ export class Properties extends Document {
 
 export const PropertiesSchema = SchemaFactory.createForClass(Properties);
 
-// Create index for propertyId
-PropertiesSchema.index({ propertyId: 1 }, { unique: true });
