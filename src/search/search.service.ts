@@ -28,7 +28,8 @@ export class SearchService {
         };
 
         const availableProperties = await this.databaseService.getAvailableProperties(query);
-
+        const total_properties = await this.databaseService.getTotalPropertiesCount(query);
+        
         const customResponse = availableProperties.map((property) => {
             const propertyType: any = property.extras?.['MasterKind']?.['MasterKindName'];
 
@@ -37,7 +38,7 @@ export class SearchService {
                 property_name: property.name,
                 property_fullAddress: property.fullAddress,
                 property_type: propertyType,
-                property_image: property.images[0],
+                property_image: property.images[0] ?? {},
                 property_price: {
                     basePrice: property.pricing.basePrice,
                     totalPrice: (Number(property.pricing.basePrice) * numberOfNights).toFixed(2),
@@ -58,7 +59,10 @@ export class SearchService {
             };
         });
         
-        return customResponse;
+        return {
+            total_properties,
+            properties: customResponse,
+        };
     }
 
     async getPropertyDetails(propertyId: string): Promise<any> {

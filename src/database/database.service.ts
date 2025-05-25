@@ -256,6 +256,10 @@ export class DatabaseService {
         return this.propertyModel.find(query).limit(10).lean().exec();
     }
 
+    async getTotalPropertiesCount(query: Record<string, any>): Promise<number> {
+        return this.propertyModel.countDocuments(query).lean().exec();
+    }
+
     async getPropertyDetails(propertyId: string): Promise<Properties | null> {
         return this.propertyModel.findOne({ propertyId }).lean().exec();
     }
