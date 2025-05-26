@@ -1,11 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { PropertyListingService } from '../property/property-listing.service';
+import { SoapService } from '../lib/soap.service';
+import { CheckAvailabilityDto } from './dto/check-availability.dto';
 
 @Injectable()
 export class SearchService {
     constructor(
-        private readonly databaseService: DatabaseService
+        private readonly databaseService: DatabaseService,
+        private readonly soapService: SoapService
     ) {}
 
     async autoCompleteSearch(keyword: string): Promise<any> {
@@ -67,6 +70,18 @@ export class SearchService {
             property_reviews: property.reviews ?? {},
             property_rating: property.rating,
         };
+    }
+
+    async checkAvailability(payload: CheckAvailabilityDto): Promise<any> {
+        const { accommodationCode, userCode, adultsNumber, checkInDate, checkOutDate } = payload;
+        
+        return await this.soapService.checkAvailability({
+            accommodationCode,
+            userCode,
+            adultsNumber,
+            checkInDate,
+            checkOutDate,
+        });
     }
 
     private customListingResponse(availableProperties: any, numberOfNights: number): any {

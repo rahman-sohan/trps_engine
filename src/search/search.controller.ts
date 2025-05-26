@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { SearchPropertyDto } from './dto/search-property.dto';
+import { CheckAvailabilityDto } from './dto/check-availability.dto';
 
 @Controller('api/v1/search')
 export class SearchController {
@@ -40,5 +41,10 @@ export class SearchController {
     @Get('/property-details/:propertyId')
     async getPropertyDetails(@Param('propertyId') propertyId: string): Promise<any> {
         return await this.searchService.getPropertyDetails(propertyId);
+    }
+
+    @Post('/check-availability')
+    async checkAvailability(@Body() payload: CheckAvailabilityDto): Promise<any> {
+        return await this.searchService.checkAvailability(payload);
     }
 }
