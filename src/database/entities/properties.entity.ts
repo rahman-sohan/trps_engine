@@ -108,6 +108,18 @@ export class Properties extends Document {
     @Prop({ required: true, unique: true })
     propertyId: string;
     
+    @Prop({ type: String }) 
+    accommodationCode: string;
+
+    @Prop({ type: String }) 
+    userCode: string;
+
+    @Prop({ type: String }) 
+    occupationalRuleId: string;
+
+    @Prop({ type: String }) 
+    priceModifierId: string;
+
     @Prop({ required: true }) 
     name: string;
 
@@ -139,13 +151,13 @@ export class Properties extends Document {
     rules?: Rules;
 
     @Prop({ type: Object, default: {} }) 
-    booking_data: Object;
+    booking_data?: Object;
 
     @Prop({ type: Object, default: {} }) 
-    extras: Object;
+    extras?: Object;
 
     @Prop({ type: Object, default: {} }) 
-    features: Object;
+    features?: Object;
 
     @Prop({ default: Date.now }) 
     lastUpdated: Date;
@@ -156,8 +168,8 @@ export class Properties extends Document {
     @Prop({ default: 'active' })
     status: string;
 
-    @Prop({ default: '0' }) 
-    rating: string;
+    @Prop({ type: Number, default: 0 }) 
+    rating: number;
 
     @Prop({ type: Object, default: {} }) 
     tags: Object;

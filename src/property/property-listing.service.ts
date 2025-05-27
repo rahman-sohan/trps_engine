@@ -123,6 +123,10 @@ export class PropertyListingService {
                 },
                 rating: accommodation?.Reviews?.Review?.Rating ?? '0', 
                 reviews: accommodation.Reviews,
+                accommodationCode: accommodation.AccommodationId,
+                userCode: accommodation.UserCode,
+                priceModifierId: accommodation.PriceModifierId,
+                occupationalRuleId: accommodation.OccupationalRuleId,
                 status: 'active',
             };
 
