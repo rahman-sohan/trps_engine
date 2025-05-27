@@ -11,6 +11,7 @@ import { Geography, GeographySchema } from './entities/geography.entity';
 import { Location, LocationSchema } from './entities/location.entity';
 import { ServiceSchema } from './entities/services.entity';
 import { Service } from './entities/services.entity';
+import { PriceModifier, PriceModifierSchema } from './entities/price-modifier.entity';
 
 console.log('```````````````````DB``````````````````');
 console.log(APP_CONFIG.MONGO_URI);
@@ -53,6 +54,10 @@ console.log('.......................................')
                 {
                     name: Service.name,
                     schema: ServiceSchema,
+                },
+                {
+                    name: PriceModifier.name,
+                    schema: PriceModifierSchema,
                 },
             ],
             'property_engine',

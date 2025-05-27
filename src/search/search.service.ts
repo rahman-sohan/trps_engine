@@ -69,6 +69,11 @@ export class SearchService {
             property_availability: property.availability,
             property_reviews: property.reviews ?? {},
             property_rating: property.rating,
+            property_stay_discounts: property.stayDiscounts ?? [],
+            property_userCode: property.userCode,
+            property_accommodationCode: property.accommodationCode,
+            property_occupationalRuleId: property.occupationalRuleId,
+            property_priceModifierId: property.priceModifierId,
         };
     }
 
@@ -82,6 +87,31 @@ export class SearchService {
             checkInDate,
             checkOutDate,
         });
+    }
+
+    async getBookingPrice(payload: CheckAvailabilityDto): Promise<any> {
+        const { accommodationCode, userCode, adultsNumber, checkInDate, checkOutDate } = payload;
+
+        const bookingPrice = await this.soapService.getBookingPrice({
+            accommodationCode,
+            userCode,
+            adultsNumber,
+            checkInDate,
+            checkOutDate,
+        });
+
+        const services = await Promise.all(bookingPrice.services.map(async (service) => ({
+            code: service.code,
+            name: (await this.databaseService.getServiceFromCode(service.code))?.name,
+            amount: service.amount,
+            price: service.price,
+            appliedTaxPercentage: service.appliedTaxPercentage,
+        })));
+
+        return {
+            ...bookingPrice,
+            services,
+        };
     }
 
     private customListingResponse(availableProperties: any, numberOfNights: number): any {

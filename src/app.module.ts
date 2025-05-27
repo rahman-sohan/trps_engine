@@ -5,10 +5,14 @@ import { DatabaseModule } from './database/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SearchModule } from './search/search.module';
 import { StartupTimeProvider } from './services/startup-time.provider';
-import { XmlService } from './lib/xml2json-parse';
 
 @Module({
-    imports: [PropertyModule, DatabaseModule, ScheduleModule.forRoot(), SearchModule],
+    imports: [
+        PropertyModule,
+        DatabaseModule,
+        ScheduleModule.forRoot(),
+        SearchModule,
+    ],
     controllers: [AppController],
     providers: [StartupTimeProvider],
 })

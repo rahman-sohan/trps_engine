@@ -43,6 +43,13 @@ export class PropertyService {
         return await this.databaseService.createRate(rate);
     }
 
+    async fetchAndSavePriceModifiersData(url: string): Promise<any> {
+        const jsonData: any = await this.fetchZipAndConvertToJson(url);
+        const priceModifier = jsonData.PriceModifierList.PriceModifier;
+        
+        return await this.databaseService.createPriceModifier(priceModifier);
+    }
+
     async fetchAndSaveGeographicAreasData(url: string): Promise<any> {
         const jsonData: any = await this.fetchZipAndConvertToJson(url);
         const geographicAreas = jsonData.GeographicAreas.InternationalizedItem.filter(
@@ -65,8 +72,10 @@ export class PropertyService {
         const jsonData: any = await this.fetchZipAndConvertToJson(url);
         const services = jsonData.Services.Service;
         const servicesInEnglish = this.parseServicesInEnglish(services);
-
-        return await this.databaseService.createServices(servicesInEnglish);
+        
+        servicesInEnglish.map( async (service) => {
+            return await this.databaseService.createServices(service);
+        });
     }
 
     async syncLocationFromGeography(): Promise<any> {

@@ -15,6 +15,7 @@ export class PropertyListingService {
         try {
             const { accommodation, availability, description, rates } = data;
 
+            const stayDiscounts = await this.databaseService.getStayDiscountsFromAccommodationId(accommodation.PriceModifierId);
             const images = this.transformImages(description.Pictures);
             const availabilityPeriods = this.transformAvailabilityPeriods(availability);
             const basePrice = this.getBasePrice(rates);
@@ -127,6 +128,7 @@ export class PropertyListingService {
                 userCode: accommodation.UserCode,
                 priceModifierId: accommodation.PriceModifierId,
                 occupationalRuleId: accommodation.OccupationalRuleId,
+                stayDiscounts: stayDiscounts?.Season,
                 status: 'active',
             };
 

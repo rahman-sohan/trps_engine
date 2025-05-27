@@ -9,6 +9,7 @@ import { Properties } from './entities/properties.entity';
 import { Geography } from './entities/geography.entity';
 import { Location } from './entities/location.entity';
 import { Service } from './entities/services.entity';
+import { PriceModifier } from './entities/price-modifier.entity';
 @Injectable()
 export class DatabaseService {
     constructor(
@@ -20,6 +21,7 @@ export class DatabaseService {
         @InjectModel(Location.name, 'property_engine') private locationModel: Model<Location>,
         @InjectModel(Rate.name, 'property_engine') private rateModel: Model<Rate>,
         @InjectModel(Service.name, 'property_engine') private serviceModel: Model<Service>,
+        @InjectModel(PriceModifier.name, 'property_engine') private priceModifierModel: Model<PriceModifier>,
     ) {}
 
     async autoCompleteSearch(keyword: string): Promise<any> {
@@ -169,18 +171,33 @@ export class DatabaseService {
         }
     }
 
-    async createServices(services: Service[]) {
-        const session = await this.serviceModel.startSession();
+    async createServices(services: Service) {
+        console.log(services);
+        try {
+            await this.serviceModel.updateOne({ code: services.code }, services, { upsert: true });
+
+            return services;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async getServiceFromCode(code: string) {
+        return this.serviceModel.findOne({ code }).lean().exec();
+    }
+
+    async createPriceModifier(priceModifier: PriceModifier[]) {
+        const session = await this.priceModifierModel.startSession();
         try {
             session.startTransaction();
 
-            await this.serviceModel.deleteMany({});
-            await this.serviceModel.create(services, { ordered: true, session });
+            await this.priceModifierModel.deleteMany({});
+            await this.priceModifierModel.create(priceModifier, { ordered: true, session });
 
             await session.commitTransaction();
             await session.endSession();
 
-            return services;
+            return priceModifier;
         } catch (error) {
             await session.abortTransaction();
             await session.endSession();
@@ -209,6 +226,10 @@ export class DatabaseService {
             await session.endSession();
             throw new Error(error);
         }
+    }
+
+    async getStayDiscountsFromAccommodationId(priceModifierId: string) {
+        return this.priceModifierModel.findOne({ Id: priceModifierId }).lean().exec();
     }
 
     async getListOfAccommodations() {

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema()
+@Schema({ _id: false })
 class Kind {
   @Prop({ required: true })
   Code: string;
@@ -10,8 +10,17 @@ class Kind {
   IsCumulative: string;
 }
 
-@Schema()
-class Season {
+@Schema({ _id: false })
+class VAT {
+  @Prop({ type: Boolean, required: false })
+  Included: boolean;
+
+  @Prop({ type: Number, required: false })
+  Percentage: number;
+}
+
+@Schema({ _id: false })
+export class Season {
   @Prop({ type: Kind, required: false })
   Kind: Kind;
 
@@ -21,20 +30,38 @@ class Season {
   @Prop({ required: true })
   EndDate: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   NumberOfNights: string;
 
+  @Prop({ required: false })
+  MinNumberOfNights: string;
+
+  @Prop({ required: false })
+  MaxNumberOfNights: string;
+
+  @Prop({ required: false })
+  MaxDate: Date;
+
+  @Prop({ required: false })
+  DaysAdvance: string;
+  
   @Prop({ required: true })
   Type: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   DiscountSupplementType: string;
+
+  @Prop({ required: false })
+  Currency: string;
+
+  @Prop({ type: VAT, required: false })
+  VAT: VAT;
 
   @Prop({ required: true })
   Amount: string;
 }
 
-@Schema()
+@Schema({ collection: 'price_modifiers', timestamps: true })
 export class PriceModifier extends Document {
   @Prop({ required: true })
   Id: string;

@@ -47,4 +47,9 @@ export class SearchController {
     async checkAvailability(@Body() payload: CheckAvailabilityDto): Promise<any> {
         return await this.searchService.checkAvailability(payload);
     }
+
+    @Post('get-booking-price')
+    async getBookingPrice(@Body() body: CheckAvailabilityDto) {
+      return this.searchService.getBookingPrice(body);
+    }
 }

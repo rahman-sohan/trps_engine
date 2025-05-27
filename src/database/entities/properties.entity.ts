@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Season } from './price-modifier.entity';
 
 @Schema({ _id: false })
 class CodeName {
@@ -176,6 +177,9 @@ export class Properties extends Document {
 
     @Prop({ type: Object, default: {} }) 
     reviews: Object;
+
+    @Prop({ type: [Season], default: [] }) 
+    stayDiscounts: Season[];
 }
 
 export const PropertiesSchema = SchemaFactory.createForClass(Properties);
