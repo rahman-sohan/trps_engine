@@ -23,13 +23,21 @@ export class SoapService {
 
         const headers = {
             'Content-Type': 'text/xml;charset=UTF-8',
-            SOAPAction: '',
+            SOAPAction: 'IsAvailable',
         };
 
         const { response } = await this.httpService.sendRequest(this.SOAP_URL, HTTP_METHOD.POST, soapEnvelope, headers);
 
         const jsonResponse = await this.xmlService.convertXmlToJson(response.data);
-        return jsonResponse;
+        
+        const availableSection = jsonResponse['soapenv:Envelope']['soapenv:Body']['ns1:IsAvailableRS']['ns2:Available'];
+        const availableCode = parseInt(availableSection['ns2:AvailableCode']);
+        const availableMessage = availableSection['ns2:AvailableMessage'];
+
+        return {
+            availabilityCode: availableCode === 1 ? true : false,
+            availabilityMessage: availableMessage,
+        };
     }
 
     private buildSoapEnvelope(params: {
