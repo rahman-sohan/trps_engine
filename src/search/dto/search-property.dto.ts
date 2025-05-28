@@ -1,4 +1,4 @@
-import { IsDateString, IsNumber, IsOptional, IsString, Max, Min, ValidateNested } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class GuestsDto {
@@ -16,18 +16,21 @@ export class GuestsDto {
 
 export class SearchPropertyDto {
     @IsDateString()
-    checkInDate: string;
+    @IsOptional()
+    checkInDate?: string;
 
     @IsDateString()
-    checkOutDate: string;
+    @IsOptional()
+    checkOutDate?: string;
 
+    @IsOptional()
     @ValidateNested()
     @Type(() => GuestsDto)
     guests: GuestsDto;
 
+    @IsNotEmpty()
     @IsString()
-    @IsOptional()
-    regionId?: string;
+    regionId: string;
 
     @IsString()
     @IsOptional()
@@ -40,4 +43,4 @@ export class SearchPropertyDto {
     @IsNumber()
     @IsOptional()
     pageSize?: number;
-} 
+}

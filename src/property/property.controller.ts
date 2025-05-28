@@ -6,28 +6,35 @@ import { FeedUrls } from 'src/lib/config/default.config';
 export class PropertyController {
     constructor(private readonly propertyService: PropertyService) {}
 
-    // @Cron(CronExpression.EVERY_10_SECONDS)
-    @Cron(CronExpression.EVERY_2_HOURS)
-    @Post('fetch-updated-data')
-    async fetchUpdatedData(): Promise<any> {
-        console.log(`========================Cron job started========================`);
+    @Cron(CronExpression.EVERY_11_HOURS)
+    @Post('update-avantio-feed')
+    async updateAvantioFeed(): Promise<void> {
+        console.log(`======================== Cron job started ========================`);
         console.log(`Fetching property data - Scheduled task running...`);
-        try {
-            return await Promise.all([
-                this.propertyService.fetchAndSaveAccommodationsData(FeedUrls.ACCOMMODATIONS),
-                // this.propertyService.fetchAndSaveDescriptionsData(FeedUrls.DESCRIPTIONS),
-                // this.propertyService.fetchAndSaveAvailabilitiesData(FeedUrls.AVAILABILITIES),
-                // this.propertyService.fetchAndSaveRatesData(FeedUrls.RATES),
-                // this.propertyService.fetchAndSaveGeographicAreasData(FeedUrls.GEOGRAPHIC_AREAS),
-                // this.propertyService.fetchAndSaveServicesData(FeedUrls.SERVICES)
-            ]);
-        } catch (error) {
-            console.error('Error fetching property data:', error);
-            throw new Error('Error fetching property data');
+    
+        const tasks: { url: string; method: () => Promise<void> }[] = [
+            // { url: FeedUrls.ACCOMMODATIONS, method: () => this.propertyService.fetchAndSaveAccommodationsData(FeedUrls.ACCOMMODATIONS) },
+            // { url: FeedUrls.DESCRIPTIONS, method: () => this.propertyService.fetchAndSaveDescriptionsData(FeedUrls.DESCRIPTIONS) },
+            // { url: FeedUrls.AVAILABILITIES, method: () => this.propertyService.fetchAndSaveAvailabilitiesData(FeedUrls.AVAILABILITIES) },
+            // { url: FeedUrls.RATES, method: () => this.propertyService.fetchAndSaveRatesData(FeedUrls.RATES) },
+            // { url: FeedUrls.GEOGRAPHIC_AREAS, method: () => this.propertyService.fetchAndSaveGeographicAreasData(FeedUrls.GEOGRAPHIC_AREAS) },
+            { url: FeedUrls.SERVICES, method: () => this.propertyService.fetchAndSaveServicesData(FeedUrls.SERVICES) },
+            // { url: FeedUrls.PRICE_MODIFIERS, method: () => this.propertyService.fetchAndSavePriceModifiersData(FeedUrls.PRICE_MODIFIERS) },
+        ];
+    
+        for (const task of tasks) {
+            try {
+                console.log(`Fetching data from ${task.url}`);
+                await task.method();
+            } catch (error) {
+                console.error(`Error fetching data from ${task.url}:`, error);
+            }
         }
+
+        console.log(`======================== Cron job finished ========================`);
     }
 
-    @Cron(CronExpression.EVERY_2_HOURS)
+    @Cron(CronExpression.EVERY_12_HOURS)
     @Post('sync-location-from-geography')
     async syncLocationFromGeography(): Promise<any> {
         console.log(`Creating location from geography - Scheduled task running`);
@@ -39,7 +46,7 @@ export class PropertyController {
         }
     }
 
-    @Cron(CronExpression.EVERY_2_HOURS)
+    @Cron(CronExpression.EVERY_12_HOURS)
     @Post('sync-properties-data')
     async syncPropertiesData(): Promise<any> {
         console.log(`========================Cron job started========================`);

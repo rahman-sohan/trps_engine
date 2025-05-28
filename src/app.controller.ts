@@ -13,14 +13,6 @@ export class AppController {
             message: `Server is running successfully since ${this.startupTime.toISOString()}`
         };
     }
-
-    @Post('/post')
-    checkPostRequest(): any {
-        return {
-            status: 'POST Request',
-            message: `Server is running successfully ${new Date()}`,
-        };
-    }
 }
 
 // https://feeds.avantio.com/accommodations/6d1885d0b17f961c8047092f6b4121a2

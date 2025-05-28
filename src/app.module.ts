@@ -7,8 +7,14 @@ import { SearchModule } from './search/search.module';
 import { StartupTimeProvider } from './services/startup-time.provider';
 
 @Module({
-    imports: [PropertyModule, DatabaseModule, ScheduleModule.forRoot(), SearchModule],
+    imports: [
+        PropertyModule,
+        DatabaseModule,
+        ScheduleModule.forRoot(),
+        SearchModule,
+    ],
     controllers: [AppController],
     providers: [StartupTimeProvider],
 })
 export class AppModule {}
+    
