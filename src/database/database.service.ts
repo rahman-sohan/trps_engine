@@ -10,6 +10,8 @@ import { Geography } from './entities/geography.entity';
 import { Location } from './entities/location.entity';
 import { Service } from './entities/services.entity';
 import { PriceModifier } from './entities/price-modifier.entity';
+import { SearchSession } from './entities/search-session.entity';
+import { CurrencyConversion } from './entities/currency.entity';
 @Injectable()
 export class DatabaseService {
     constructor(
@@ -22,6 +24,8 @@ export class DatabaseService {
         @InjectModel(Rate.name, 'property_engine') private rateModel: Model<Rate>,
         @InjectModel(Service.name, 'property_engine') private serviceModel: Model<Service>,
         @InjectModel(PriceModifier.name, 'property_engine') private priceModifierModel: Model<PriceModifier>,
+        @InjectModel(SearchSession.name, 'property_engine') private searchSessionModel: Model<SearchSession>,
+        @InjectModel(CurrencyConversion.name, 'property_engine') private currencyConversionModel: Model<CurrencyConversion>,
     ) {}
 
     async autoCompleteSearch(keyword: string): Promise<any> {
@@ -171,6 +175,23 @@ export class DatabaseService {
         }
     }
 
+    async createSearchSession(searchSession: Partial<SearchSession>) {
+        const session = await this.searchSessionModel.startSession();
+        try {
+            session.startTransaction();
+            
+            const [createdSession] = await this.searchSessionModel.create([searchSession], { ordered: true, session });
+            
+            await session.commitTransaction();
+            await session.endSession();
+            return createdSession;
+        } catch (error) {
+            await session.abortTransaction();
+            await session.endSession();
+            throw new Error(error);
+        }
+    }
+
     async createServices(services: Service) {
         console.log(services);
         try {
@@ -226,6 +247,15 @@ export class DatabaseService {
             await session.endSession();
             throw new Error(error);
         }
+    }
+
+
+    async getSearchSessionById(sessionId: string): Promise<SearchSession | null> {
+        return this.searchSessionModel.findOne({ sessionId }, { _id: 0, sessionId: 1, searchParams: 1 }).lean().exec();
+    }
+    
+    async getCurrencyConversion(fromCurrency: string, toCurrency: string) {
+        return this.currencyConversionModel.findOne({ fromCurrency, toCurrency }).lean().exec();
     }
 
     async getStayDiscountsFromAccommodationId(priceModifierId: string) {

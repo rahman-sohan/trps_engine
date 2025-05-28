@@ -18,16 +18,16 @@ export class SearchController {
 
     @Post('/available-properties')
     async searchProperty(@Body() payload: SearchPropertyDto): Promise<any> {
-        const { checkInDate, checkOutDate, guests, regionId, countryCode } = payload;
-        const { adults, children } = guests;
+        const { checkInDate, checkOutDate, guests, regionId, countryCode, page, pageSize } = payload;
         
         const availableProperties = await this.searchService.getAvailableProperties({
             checkInDate,
             checkOutDate,
-            adults,
-            children,
+            guests,
             regionId, 
-            countryCode 
+            countryCode,
+            page,
+            pageSize
         });
 
         return availableProperties;
@@ -39,8 +39,10 @@ export class SearchController {
     }
 
     @Get('/property-details/:propertyId')
-    async getPropertyDetails(@Param('propertyId') propertyId: string): Promise<any> {
-        return await this.searchService.getPropertyDetails(propertyId);
+    async getPropertyDetails(
+        @Param('propertyId') propertyId: string,
+        @Query('sessionId') sessionId:string ): Promise<any> {
+            return await this.searchService.getPropertyDetails(propertyId, sessionId);
     }
 
     @Post('/check-availability')

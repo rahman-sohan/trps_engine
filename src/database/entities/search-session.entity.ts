@@ -7,7 +7,7 @@ export class Guests {
 	adults: number;
 
 	@Prop({ required: false })
-	children: number[];
+	children: number;
 }
 
 @Schema({ _id: false })
@@ -36,11 +36,8 @@ export class SearchParams {
 
 @Schema({ collection: 'search_session' })
 export class SearchSession extends Document {
-	@Prop({ required: false })
-	createdAt: Date;
-
-	@Prop({ required: false })
-	expiresAt: Date;
+	@Prop({ required: true })
+	sessionId: string;
 
 	@Prop({ required: false, type: SearchParams })
 	searchParams: SearchParams;
@@ -56,6 +53,13 @@ export class SearchSession extends Document {
 
 	@Prop({ required: false })
 	propertiesIds: string[];
+
+	@Prop({ required: false })
+	createdAt: Date;
+
+	@Prop({ required: false })
+	expiresAt: Date;
 }
 
 export const SearchSessionSchema = SchemaFactory.createForClass(SearchSession);
+SearchSessionSchema.index({ expiresAt: -1 }, { expireAfterSeconds: 2 * 60 * 60 });

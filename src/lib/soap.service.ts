@@ -93,7 +93,7 @@ export class SoapService {
         return this.parseBookingPriceResponse(jsonResponse);
     }
 
-    private parseBookingPriceResponse(response: any): BookingPriceResponse {
+    private parseBookingPriceResponse(response: any): BookingPriceResponse {        
         const bookingPriceSection = response['soapenv:Envelope']['soapenv:Body']['ns1:GetBookingPriceRS']['ns2:BookingPrice'];
         const cancellationPoliciesSection = response['soapenv:Envelope']['soapenv:Body']['ns1:GetBookingPriceRS']['ns2:CancellationPolicies'];
         const servicesSection = response['soapenv:Envelope']['soapenv:Body']['ns1:GetBookingPriceRS']['ns2:Services'];

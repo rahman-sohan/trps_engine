@@ -125,7 +125,7 @@ export class PropertyListingService {
                 rating: accommodation?.Reviews?.Review?.Rating ?? '0', 
                 reviews: accommodation.Reviews,
                 accommodationCode: accommodation.AccommodationId,
-                userCode: accommodation.UserCode,
+                userCode: accommodation.UserId,
                 priceModifierId: accommodation.PriceModifierId,
                 occupationalRuleId: accommodation.OccupationalRuleId,
                 stayDiscounts: stayDiscounts?.Season,
