@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CustomHttpService } from '../custom-http-service/custom-http.service';
 import { HTTP_METHOD } from '../custom-http-service/httpcode.constant';
 import { XmlService } from './xml2json-parse';
@@ -93,11 +93,17 @@ export class SoapService {
         return this.parseBookingPriceResponse(jsonResponse);
     }
 
-    private parseBookingPriceResponse(response: any): BookingPriceResponse {        
-        const bookingPriceSection = response['soapenv:Envelope']['soapenv:Body']['ns1:GetBookingPriceRS']['ns2:BookingPrice'];
-        const cancellationPoliciesSection = response['soapenv:Envelope']['soapenv:Body']['ns1:GetBookingPriceRS']['ns2:CancellationPolicies'];
-        const servicesSection = response['soapenv:Envelope']['soapenv:Body']['ns1:GetBookingPriceRS']['ns2:Services'];
-        const taxAmount = response['soapenv:Envelope']['soapenv:Body']['ns1:GetBookingPriceRS']['ns2:TaxAmount'];
+    private parseBookingPriceResponse(response: any): BookingPriceResponse {
+        const bookingPriceMainSection = response['soapenv:Envelope']['soapenv:Body']['ns1:GetBookingPriceRS'];
+
+        const bookingPriceSection = bookingPriceMainSection['ns2:BookingPrice'];
+        const cancellationPoliciesSection = bookingPriceMainSection['ns2:CancellationPolicies'];
+        const servicesSection = bookingPriceMainSection['ns2:Services'];
+        const taxAmount = bookingPriceMainSection['ns2:TaxAmount'];
+
+        if(!bookingPriceSection || !cancellationPoliciesSection || !servicesSection || !taxAmount){
+            throw new BadRequestException('Invalid booking price response');
+        }
 
         return {
             bookingPrice: {

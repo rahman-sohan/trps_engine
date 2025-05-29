@@ -1,6 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { PropertyListingService } from '../property/property-listing.service';
 import { SoapService } from '../lib/soap.service';
 import { CheckAvailabilityDto } from './dto/check-availability.dto';
 import { v4 as uuidv4 } from 'uuid';
