@@ -13,13 +13,13 @@ export class PropertyController {
         console.log(`Fetching property data - Scheduled task running...`);
     
         const tasks: { url: string; method: () => Promise<void> }[] = [
-            // { url: FeedUrls.ACCOMMODATIONS, method: () => this.propertyService.fetchAndSaveAccommodationsData(FeedUrls.ACCOMMODATIONS) },
-            // { url: FeedUrls.DESCRIPTIONS, method: () => this.propertyService.fetchAndSaveDescriptionsData(FeedUrls.DESCRIPTIONS) },
-            // { url: FeedUrls.AVAILABILITIES, method: () => this.propertyService.fetchAndSaveAvailabilitiesData(FeedUrls.AVAILABILITIES) },
-            // { url: FeedUrls.RATES, method: () => this.propertyService.fetchAndSaveRatesData(FeedUrls.RATES) },
-            // { url: FeedUrls.GEOGRAPHIC_AREAS, method: () => this.propertyService.fetchAndSaveGeographicAreasData(FeedUrls.GEOGRAPHIC_AREAS) },
+            { url: FeedUrls.ACCOMMODATIONS, method: () => this.propertyService.fetchAndSaveAccommodationsData(FeedUrls.ACCOMMODATIONS) },
+            { url: FeedUrls.DESCRIPTIONS, method: () => this.propertyService.fetchAndSaveDescriptionsData(FeedUrls.DESCRIPTIONS) },
+            { url: FeedUrls.AVAILABILITIES, method: () => this.propertyService.fetchAndSaveAvailabilitiesData(FeedUrls.AVAILABILITIES) },
+            { url: FeedUrls.RATES, method: () => this.propertyService.fetchAndSaveRatesData(FeedUrls.RATES) },
+            { url: FeedUrls.GEOGRAPHIC_AREAS, method: () => this.propertyService.fetchAndSaveGeographicAreasData(FeedUrls.GEOGRAPHIC_AREAS) },
             { url: FeedUrls.SERVICES, method: () => this.propertyService.fetchAndSaveServicesData(FeedUrls.SERVICES) },
-            // { url: FeedUrls.PRICE_MODIFIERS, method: () => this.propertyService.fetchAndSavePriceModifiersData(FeedUrls.PRICE_MODIFIERS) },
+            { url: FeedUrls.PRICE_MODIFIERS, method: () => this.propertyService.fetchAndSavePriceModifiersData(FeedUrls.PRICE_MODIFIERS) },
         ];
     
         for (const task of tasks) {
