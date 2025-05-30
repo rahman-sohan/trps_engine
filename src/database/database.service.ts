@@ -249,6 +249,9 @@ export class DatabaseService {
         }
     }
 
+    async getBookingCodeByAccommodationCode(accommodationCode: string): Promise<any> {
+        return this.propertyModel.findOne({ accommodationCode }, { _id: 0, booking_data: 1 }).lean().exec();
+    }
 
     async getSearchSessionById(sessionId: string): Promise<SearchSession | null> {
         return this.searchSessionModel.findOne({ sessionId }, { _id: 0, sessionId: 1, searchParams: 1 }).lean().exec();

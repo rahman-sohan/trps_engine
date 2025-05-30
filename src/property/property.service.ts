@@ -5,6 +5,7 @@ import { HTTP_METHOD } from 'src/custom-http-service/httpcode.constant';
 import { XmlService } from '../lib/xml2json-parse';
 import { DatabaseService } from 'src/database/database.service';
 import { PropertyListingService } from './property-listing.service';
+import { SubmitBookingDto } from './dto/submit-booking.dto';
 
 @Injectable()
 export class PropertyService {
@@ -209,4 +210,41 @@ export class PropertyService {
             console.error('Error fetching or saving data:', error);
         }
     }
+
+    async submitBookingForm(params: SubmitBookingDto) {
+        const { accommodationCode, userCode, adultsNumber, checkInDate, checkOutDate } = params;
+    
+        const formattedCheckIn = this.formatDateForBookingUrl(checkInDate);
+        const formattedCheckOut = this.formatDateForBookingUrl(checkOutDate);
+    
+        const bookingInfo = await this.databaseService.getBookingCodeByAccommodationCode(accommodationCode);
+        const originalBookingUrl = bookingInfo?.booking_data?.BookingURL;
+    
+        if (!originalBookingUrl) {
+            throw new Error('Booking URL not found for the provided accommodation code.');
+        }
+    
+        const baseUrl = this.replaceSubdomain(originalBookingUrl, 'trps');
+        const bookingUrlWithParams = `${baseUrl}?FRMEntrada=${formattedCheckIn}&FRMSalida=${formattedCheckOut}&FRMAdultos=${adultsNumber}`;
+    
+        return {
+            detailsUrl: baseUrl,
+            bookingUrl: bookingUrlWithParams,
+        };
+    }
+    
+    private replaceSubdomain(url: string, newSubdomain: string): string {
+        return url.replace(/(bookings\.)[^.]+/, `bookings.${newSubdomain}`);
+    }
+
+    private formatDateForBookingUrl(date: string): string {
+        const dateObject = new Date(date);
+
+        const day = dateObject.getDate().toString().padStart(2, '0');
+        const month = (dateObject.getMonth() + 1).toString().padStart(2, '0');
+        const year = dateObject.getFullYear();
+
+        return `${day}/${month}/${year}`;
+    }
+      
 }

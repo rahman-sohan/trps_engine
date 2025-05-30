@@ -1,7 +1,8 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { FeedUrls } from 'src/lib/config/default.config';
+import { SubmitBookingDto } from './dto/submit-booking.dto';
 @Controller('api/v1/property')
 export class PropertyController {
     constructor(private readonly propertyService: PropertyService) {}
@@ -54,4 +55,10 @@ export class PropertyController {
 
         return await this.propertyService.syncPropertiesData();
     }
+
+    @Post('submit-booking')
+    async submitBookingForm(@Body() bookingForm:SubmitBookingDto): Promise<any> {
+        return this.propertyService.submitBookingForm(bookingForm);
+    }
+
 }
