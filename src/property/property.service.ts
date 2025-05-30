@@ -6,6 +6,7 @@ import { XmlService } from '../lib/xml2json-parse';
 import { DatabaseService } from 'src/database/database.service';
 import { PropertyListingService } from './property-listing.service';
 import { SubmitBookingDto } from './dto/submit-booking.dto';
+const SUB_DOMAIN = 'trps';
 
 @Injectable()
 export class PropertyService {
@@ -224,17 +225,18 @@ export class PropertyService {
             throw new Error('Booking URL not found for the provided accommodation code.');
         }
     
-        const baseUrl = this.replaceSubdomain(originalBookingUrl, 'trps');
+        const baseUrl = this.replaceSubdomain(originalBookingUrl);
         const bookingUrlWithParams = `${baseUrl}?FRMEntrada=${formattedCheckIn}&FRMSalida=${formattedCheckOut}&FRMAdultos=${adultsNumber}`;
     
         return {
-            detailsUrl: baseUrl,
+            detailsUrl: this.replaceSubdomain(bookingInfo.booking_data.DetailsURL),
             bookingUrl: bookingUrlWithParams,
-        };
+            contactURL: this.replaceSubdomain(bookingInfo.booking_data.ContactURL)
+        }
     }
-    
-    private replaceSubdomain(url: string, newSubdomain: string): string {
-        return url.replace(/(bookings\.)[^.]+/, `bookings.${newSubdomain}`);
+
+    private replaceSubdomain(url: string): string {
+        return url.replace(/(bookings\.)[^.]+/, `bookings.${SUB_DOMAIN}`);
     }
 
     private formatDateForBookingUrl(date: string): string {
