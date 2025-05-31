@@ -13,10 +13,10 @@ export class Guests {
 @Schema({ _id: false })
 export class SearchParams {
 	@Prop({ required: false })
-	checkInDate: Date;
+	checkInDate: Date | null;
 
 	@Prop({ required: false })
-	checkOutDate: Date;
+	checkOutDate: Date | null;
 
 	@Prop({ required: false })
 	guests: Guests;

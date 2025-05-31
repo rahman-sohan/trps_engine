@@ -20,18 +20,26 @@ export class SearchService {
 
     async getAvailableProperties(payload: any): Promise<any> {
         const { checkInDate, checkOutDate, guests, regionId, countryCode, page, pageSize } = payload;
-        const { adults, children } = guests;
-        const numberOfNights = (new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) / (1000 * 60 * 60 * 24);
-        const numberOfGuests = adults + children;
+        
+        let numberOfNights = 0;
+        if( checkInDate && checkOutDate) {
+            const numberOfNights = (new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) / (1000 * 60 * 60 * 24); 
+        }
 
-        const query = {
-            'location.locality.code': regionId,
-            // 'availability.availablePeriods.StartDate': { $lte: checkInDate },
-            // 'availability.availablePeriods.EndDate': { $gte: checkOutDate },
-            // 'details.capacity.minOccupation': { $lte: numberOfGuests },
-            // 'details.capacity.maxOccupation': { $gte: numberOfGuests },
-            // 'availability.availablePeriods.State': 'Available',
-        };
+        if (guests) {
+            const { adults, children } = guests;
+            const numberOfGuests = adults + children;
+        }
+
+        const query: any = {};
+        if (regionId) {
+            query['location.locality.code'] = regionId;
+        }
+        // query['availability.availablePeriods.StartDate'] = { $lte: checkInDate };
+        // query['availability.availablePeriods.EndDate'] = { $gte: checkOutDate };
+        // query['details.capacity.minOccupation'] = { $lte: numberOfGuests };
+        // query['details.capacity.maxOccupation'] = { $gte: numberOfGuests };
+        // query['availability.availablePeriods.State'] = 'Available';
 
         const availableProperties = await this.databaseService.getAvailableProperties(query);
         const total_properties = await this.databaseService.getTotalPropertiesCount(query);
@@ -64,7 +72,7 @@ export class SearchService {
         const session = await this.databaseService.getSearchSessionById(sessionId);
         let numberOfNights = 1;
         let bookingPrice = null;
-        if (session) {
+        if (session && session.searchParams && session.searchParams.checkInDate && session.searchParams.checkOutDate) {
             try {
                 bookingPrice = await this.getBookingPrice({
                     accommodationCode: property.accommodationCode,
@@ -221,8 +229,8 @@ export class SearchService {
         const searchSessionData: Partial<SearchSession> = {
             sessionId: uuidv4(),
             searchParams: {
-                checkInDate: checkInDate ? new Date(checkInDate) : new Date(),
-                checkOutDate: checkOutDate ? new Date(checkOutDate) : new Date(),
+                checkInDate: checkInDate ? new Date(checkInDate) : null,
+                checkOutDate: checkOutDate ? new Date(checkOutDate) : null,
                 guests: searchGuests,
                 countryCode: countryCode || '',
                 regionId: regionId || '',

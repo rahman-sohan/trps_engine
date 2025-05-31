@@ -14,7 +14,7 @@ export class GuestsDto {
     children: number;
 }
 
-export class SearchPropertyDto {
+ export class SearchPropertyDto {
     @IsDateString()
     @IsOptional()
     checkInDate?: string;
@@ -28,7 +28,7 @@ export class SearchPropertyDto {
     @Type(() => GuestsDto)
     guests: GuestsDto;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     regionId: string;
 
