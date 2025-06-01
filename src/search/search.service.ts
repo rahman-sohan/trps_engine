@@ -221,16 +221,16 @@ export class SearchService {
         const { checkInDate, checkOutDate, guests, countryCode, regionId, page, pageSize } = payload;
 
         const searchGuests: Guests = {
-            adults: guests.adults,
-            children: guests.children
+            adults: guests?.adults,
+            children: guests?.children
         };
         
        
         const searchSessionData: Partial<SearchSession> = {
             sessionId: uuidv4(),
             searchParams: {
-                checkInDate: checkInDate ? new Date(checkInDate) : null,
-                checkOutDate: checkOutDate ? new Date(checkOutDate) : null,
+                checkInDate: checkInDate ? new Date(checkInDate) : new Date(),
+                checkOutDate: checkOutDate ? new Date(checkOutDate) : new Date(),
                 guests: searchGuests,
                 countryCode: countryCode || '',
                 regionId: regionId || '',
