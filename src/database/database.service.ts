@@ -318,11 +318,8 @@ export class DatabaseService {
         return this.propertyModel.findOne({ propertyId }).lean().exec();
     }
 
-    async getFeaturedProperties(regionId: string): Promise<Properties[]> {
-        const query = {
-            'location.region.code': regionId
-        };
-        
+    async getFeaturedProperties(query: Record<string,any>): Promise<Properties[]> {
+        console.log(query)
         return this.propertyModel.find(query).limit(10).lean().exec();
     }
 }

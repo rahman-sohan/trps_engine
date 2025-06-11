@@ -56,10 +56,21 @@ export class SearchService {
     }
 
     async getFeaturedProperties(regionId: string): Promise<any> {
-        regionId = '190';
-        const featuredProperties = await this.databaseService.getFeaturedProperties(regionId);
+        regionId = '190'; // default to dubai region for now
 
-        return this.customListingResponse(featuredProperties, 1);
+        const query: any = {};
+        if (regionId) {
+            query['location.region.code'] = regionId;
+        }
+
+        const total_properties = await this.databaseService.getTotalPropertiesCount(query);
+        const featuredProperties = await this.databaseService.getFeaturedProperties(query);
+
+        const custom_response =  await this.customListingResponse(featuredProperties, 1);
+        return {
+            total_properties,
+            properties: custom_response
+        }
     }
 
     async getPropertyDetails(propertyId: string, sessionId: string): Promise<any> {
