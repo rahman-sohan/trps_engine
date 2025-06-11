@@ -318,8 +318,14 @@ export class DatabaseService {
         return this.propertyModel.findOne({ propertyId }).lean().exec();
     }
 
-    async getFeaturedProperties(query: Record<string,any>): Promise<Properties[]> {
-        console.log(query)
-        return this.propertyModel.find(query).limit(10).lean().exec();
+    async getFeaturedProperties(
+        query: Record<string, any>, 
+        sortOptions: Record<string, any> = {}, 
+        page: number = 1,
+        pageSize: number = 10
+    ): Promise<Properties[]> {
+        const skip = (page - 1) * pageSize;
+        
+        return this.propertyModel.find(query).sort(sortOptions).skip(skip).limit(pageSize).lean().exec();
     }
 }

@@ -55,8 +55,13 @@ export class SearchService {
         };
     }
 
-    async getFeaturedProperties(regionId: string): Promise<any> {
-        regionId = '190'; // default to dubai region for now
+    async getFeaturedProperties(
+        regionId?: string, 
+        sortBy?: 'price_low_to_high' | 'price_high_to_low' | 'rating_low_to_high' | 'rating_high_to_low',
+        page?: number,
+        pageSize?: number
+    ): Promise<any> {
+        regionId = regionId || '190'; // default to dubai region for now
 
         const query: any = {};
         if (regionId) {
@@ -64,12 +69,43 @@ export class SearchService {
         }
 
         const total_properties = await this.databaseService.getTotalPropertiesCount(query);
-        const featuredProperties = await this.databaseService.getFeaturedProperties(query);
+        
+        let sortOptions: any = {};
+        switch (sortBy) {
+            case 'price_low_to_high':
+                sortOptions = { 'pricing.basePrice': 1 };
+                break;
+            case 'price_high_to_low':
+                sortOptions = { 'pricing.basePrice': -1 };
+                break;
+            case 'rating_low_to_high':
+                sortOptions = { 'rating': 1 };
+                break;
+            case 'rating_high_to_low':
+                sortOptions = { 'rating': -1 };
+                break;
+            default:
+                sortOptions = { 'rating': -1 };
+                break;
+        }
 
-        const custom_response =  await this.customListingResponse(featuredProperties, 1);
+        const featuredProperties = await this.databaseService.getFeaturedProperties(
+            query, 
+            sortOptions,
+            page, 
+            pageSize
+        );
+
+        const custom_response = await this.customListingResponse(featuredProperties, 1);
+        
         return {
             total_properties,
-            properties: custom_response
+            properties: custom_response,
+            sortBy: sortBy || 'default',
+            pagination: {
+                currentPage: page,
+                pageSize: pageSize,
+            }
         }
     }
 
@@ -172,7 +208,7 @@ export class SearchService {
     }
 
     private async customListingResponse(availableProperties: any, numberOfNights: number): Promise<any> {
-        return Promise.all(availableProperties.map(async(property) => {
+        const propertiesWithConvertedPrices = await Promise.all(availableProperties.map(async(property) => {
             const propertyType: any = property.extras?.['MasterKind']?.['MasterKindName'];
             const convertedCurrency = await this.convertCurrency(parseFloat(property.pricing.basePrice), property.pricing.currency, 'AED');
 
@@ -201,11 +237,13 @@ export class SearchService {
                     totalBeds: property.details.capacity.bedrooms == "" ? 'N/A' : property.details.capacity.bedrooms,
                     bathrooms: property.details.capacity.bathrooms
                 },
-                property_rating: property.rating,
+                property_rating: parseFloat(property.rating) || 0,
                 property_location: property.location,
                 property_reviews: property.reviews ?? {},
             };
         }));
+
+        return propertiesWithConvertedPrices;
     }
 
     private async convertCurrency(amount: number, fromCurrency: string, toCurrency: string): Promise<any> {

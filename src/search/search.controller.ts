@@ -34,8 +34,18 @@ export class SearchController {
     }
 
     @Get('/featured-properties')
-    async getFeaturedProperties(@Param('regionId') regionId: string): Promise<any> {
-        return await this.searchService.getFeaturedProperties(regionId);
+    async getFeaturedProperties(
+        @Query('regionId') regionId?: string,
+        @Query('sortBy') sortBy?: 'price_low_to_high' | 'price_high_to_low' | 'rating_low_to_high' | 'rating_high_to_low',
+        @Query('page') page?: string,
+        @Query('pageSize') pageSize?: string
+    ): Promise<any> {
+        return await this.searchService.getFeaturedProperties(
+            regionId, 
+            sortBy, 
+            page ? parseInt(page) : 1,
+            pageSize ? parseInt(pageSize) : 10
+        );
     }
 
     @Get('/property-details/:propertyId')
